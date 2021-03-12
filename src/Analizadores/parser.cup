@@ -1,0 +1,36 @@
+package Analizadores;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol sym;
+    
+    public void syntax_error(Symbol sym){
+        this.sym = sym;
+    }
+
+    public Symbol getS(){
+        return this.sym;
+}
+:};
+
+terminal Linea, Comillas, InicioE, DosP, FinE, MayorQ, MenorQ, Cadena, CrearU, UsuarioP,
+    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, ContraP, FechaCP,
+    Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c, Usuario, Contra, Fecha,
+    Llave_a, Llave_c, Corchete_a, Corchete_c, P_coma, Identificador, MasSolicitudes, FinMasSolicitudes,
+    Numero, ERROR, InicioSolicitud, FinSolicitud, Coma, ID, URL;
+non terminal inicio, bloque_solicitudes, solicitud, bloque_param;
+
+start with inicio;
+
+inicio::=
+    InicioE MasSolicitudes MayorQ bloque_solicitudes InicioE FinMasSolicitudes MayorQ
+    | solicitud
+;
+bloque_solicitudes::=
+    bloque_solicitudes solicitud
+;
+solicitud::=
+    InicioE InicioSolicitud DosP Comillas Usuario Comillas MayorQ bloque_param MenorQ FinSolicitud FinE
+;
