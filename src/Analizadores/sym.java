@@ -8,93 +8,139 @@ package Analizadores;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int Op_relacional = 18;
-  public static final int Coma = 40;
-  public static final int Llave_c = 29;
-  public static final int Op_booleano = 22;
-  public static final int Llave_a = 28;
-  public static final int FinSolicitud = 39;
-  public static final int ContraP = 19;
-  public static final int Corchete_c = 31;
-  public static final int Corchete_a = 30;
-  public static final int MenorQ = 8;
-  public static final int UsuarioP = 11;
-  public static final int Division = 16;
+  public static final int INICIOE = 4;
+  public static final int FINE = 6;
+  public static final int ELIMINARU = 19;
+  public static final int USUARIOCP = 31;
+  public static final int MENORQ = 8;
+  public static final int NOMBREP = 29;
+  public static final int CORCHETEC = 37;
+  public static final int CORCHETEA = 36;
+  public static final int FECHA = 26;
+  public static final int CREARU = 10;
+  public static final int NOMBREC = 44;
+  public static final int ELIMINARF = 33;
+  public static final int TEXTOVC = 55;
+  public static final int FORMULARIOC = 52;
+  public static final int ELIMINARC = 62;
+  public static final int USUARIO = 24;
+  public static final int TITULOP = 28;
+  public static final int TEMAP = 30;
   public static final int Cadena = 9;
-  public static final int Parentesis_c = 24;
-  public static final int ID = 41;
-  public static final int Parentesis_a = 23;
-  public static final int CrearU = 10;
+  public static final int Parentesis_c = 23;
+  public static final int ID = 50;
+  public static final int FINSOLICITUDES = 40;
+  public static final int Parentesis_a = 22;
+  public static final int P_coma = 38;
   public static final int EOF = 0;
-  public static final int P_coma = 32;
+  public static final int FECHAMP = 18;
+  public static final int ALINEAC = 56;
+  public static final int IDP = 27;
+  public static final int CONTRAP = 16;
+  public static final int CLASE = 53;
+  public static final int COMILLAS = 3;
+  public static final int USUARIOP = 11;
   public static final int error = 1;
-  public static final int InicioSolicitud = 38;
+  public static final int USUARIONP = 14;
+  public static final int COMA = 49;
   public static final int Linea = 2;
-  public static final int URL = 42;
-  public static final int MasSolicitudes = 34;
-  public static final int Op_atribucion = 21;
-  public static final int ERROR = 37;
-  public static final int Op_logico = 17;
-  public static final int Contra = 26;
-  public static final int DosP = 5;
-  public static final int Usuario = 25;
-  public static final int InicioE = 4;
-  public static final int Identificador = 33;
-  public static final int Resta = 14;
-  public static final int Fecha = 27;
-  public static final int Multiplicacion = 15;
-  public static final int Numero = 36;
-  public static final int Suma = 13;
-  public static final int FinMasSolicitudes = 35;
-  public static final int FinE = 6;
-  public static final int Igual = 12;
-  public static final int FechaCP = 20;
-  public static final int MayorQ = 7;
-  public static final int Comillas = 3;
+  public static final int URL = 51;
+  public static final int MODIFICARU = 12;
+  public static final int SOLICITUDESP = 39;
+  public static final int ERROR = 46;
+  public static final int NUEVOFP = 21;
+  public static final int TEMA = 32;
+  public static final int Contra = 25;
+  public static final int REQUERIDO = 57;
+  public static final int MAYORQ = 7;
+  public static final int NUEVOP = 15;
+  public static final int FECHACP = 17;
+  public static final int MODIFICARF = 41;
+  public static final int PARAMF = 42;
+  public static final int USUARIOAP = 13;
+  public static final int MODIFICARC = 64;
+  public static final int PARAMC = 63;
+  public static final int INDICEC = 54;
+  public static final int DOSP = 5;
+  public static final int INICIOS = 47;
+  public static final int AGREGARC = 43;
+  public static final int URLC = 61;
+  public static final int CREDENCIALES = 65;
+  public static final int COLUMNAS = 60;
+  public static final int FILAS = 59;
+  public static final int Numero = 45;
+  public static final int LLAVEC = 35;
+  public static final int FINS = 48;
+  public static final int LOGINU = 20;
+  public static final int LLAVEA = 34;
+  public static final int OPCIONES = 58;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "Linea",
-  "Comillas",
-  "InicioE",
-  "DosP",
-  "FinE",
-  "MayorQ",
-  "MenorQ",
+  "COMILLAS",
+  "INICIOE",
+  "DOSP",
+  "FINE",
+  "MAYORQ",
+  "MENORQ",
   "Cadena",
-  "CrearU",
-  "UsuarioP",
-  "Igual",
-  "Suma",
-  "Resta",
-  "Multiplicacion",
-  "Division",
-  "Op_logico",
-  "Op_relacional",
-  "ContraP",
-  "FechaCP",
-  "Op_atribucion",
-  "Op_booleano",
+  "CREARU",
+  "USUARIOP",
+  "MODIFICARU",
+  "USUARIOAP",
+  "USUARIONP",
+  "NUEVOP",
+  "CONTRAP",
+  "FECHACP",
+  "FECHAMP",
+  "ELIMINARU",
+  "LOGINU",
+  "NUEVOFP",
   "Parentesis_a",
   "Parentesis_c",
-  "Usuario",
+  "USUARIO",
   "Contra",
-  "Fecha",
-  "Llave_a",
-  "Llave_c",
-  "Corchete_a",
-  "Corchete_c",
+  "FECHA",
+  "IDP",
+  "TITULOP",
+  "NOMBREP",
+  "TEMAP",
+  "USUARIOCP",
+  "TEMA",
+  "ELIMINARF",
+  "LLAVEA",
+  "LLAVEC",
+  "CORCHETEA",
+  "CORCHETEC",
   "P_coma",
-  "Identificador",
-  "MasSolicitudes",
-  "FinMasSolicitudes",
+  "SOLICITUDESP",
+  "FINSOLICITUDES",
+  "MODIFICARF",
+  "PARAMF",
+  "AGREGARC",
+  "NOMBREC",
   "Numero",
   "ERROR",
-  "InicioSolicitud",
-  "FinSolicitud",
-  "Coma",
+  "INICIOS",
+  "FINS",
+  "COMA",
   "ID",
-  "URL"
+  "URL",
+  "FORMULARIOC",
+  "CLASE",
+  "INDICEC",
+  "TEXTOVC",
+  "ALINEAC",
+  "REQUERIDO",
+  "OPCIONES",
+  "FILAS",
+  "COLUMNAS",
+  "URLC",
+  "ELIMINARC",
+  "PARAMC",
+  "MODIFICARC",
+  "CREDENCIALES"
   };
 }
 

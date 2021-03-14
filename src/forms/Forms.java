@@ -29,6 +29,7 @@ public class Forms {
      */
     public static void main(String[] args) throws UnsupportedEncodingException, Exception {
         Generadores generar = new Generadores();
-        generar.probar();
+        generar.generar();
+        
     }
 }

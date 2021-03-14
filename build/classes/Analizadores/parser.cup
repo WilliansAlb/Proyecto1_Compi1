@@ -6,31 +6,118 @@ parser code
 {:
     private Symbol sym;
     
-    public void syntax_error(Symbol sym){
-        this.sym = sym;
-    }
-
     public Symbol getS(){
         return this.sym;
-}
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("reportfatal "+message+info);
+    }
+    public void report_fatal_error(Symbol cur) {
+        System.out.println("unrecovered_syntax_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println(symbl_name_from_id(expected_token_ids().get(0)));
+        System.out.println("syntaxerr: " + symbl_name_from_id(cur_token.sym) +" Linea: "+cur_token.right+" Columna: "+cur_token.left+" Valor:"+cur_token.value);
+    }
+
+    protected int error_sync_size() {
+        return 1;
+    }
+
 :};
 
-terminal Linea, Comillas, InicioE, DosP, FinE, MayorQ, MenorQ, Cadena, CrearU, UsuarioP,
-    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, ContraP, FechaCP,
-    Op_atribucion, Op_booleano, Parentesis_a, Parentesis_c, Usuario, Contra, Fecha,
-    Llave_a, Llave_c, Corchete_a, Corchete_c, P_coma, Identificador, MasSolicitudes, FinMasSolicitudes,
-    Numero, ERROR, InicioSolicitud, FinSolicitud, Coma, ID, URL;
-non terminal inicio, bloque_solicitudes, solicitud, bloque_param;
+terminal Linea, COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, Cadena, CREARU, USUARIOP, MODIFICARU, USUARIOAP, USUARIONP, NUEVOP,
+    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP,
+    Parentesis_a, Parentesis_c, USUARIO, Contra, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
+    LLAVEA, LLAVEC, CORCHETEA, CORCHETEC, P_coma, SOLICITUDESP, FINSOLICITUDES, MODIFICARF, PARAMF, AGREGARC, NOMBREC,
+    Numero, ERROR, INICIOS, FINS, COMA, ID, URL, FORMULARIOC, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS,
+    COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES;
+
+non terminal inicio, solicitud, bloque_usuario1, params, bloque_solicitudes, nueva_solicitud, tipo_solicitud, inicio_param_usuario,
+    parametro_usuario, parametros_crear, parametro_contra, parametro_fecha, parametro_login, bloque_usuario2, parametros_modificarU,
+    parametro_usuario_antiguo, parametro_usuario_nuevo, parametro_contra_nueva, parametro_fecha_modificacion;
 
 start with inicio;
 
 inicio::=
-    InicioE MasSolicitudes MayorQ bloque_solicitudes InicioE FinMasSolicitudes MayorQ
+    INICIOE SOLICITUDESP MAYORQ bloque_solicitudes INICIOE FINSOLICITUDES MAYORQ
     | solicitud
 ;
+
 bloque_solicitudes::=
     bloque_solicitudes solicitud
+    | solicitud
 ;
+
 solicitud::=
-    InicioE InicioSolicitud DosP Comillas Usuario Comillas MayorQ bloque_param MenorQ FinSolicitud FinE
+    INICIOE INICIOS DOSP COMILLAS tipo_solicitud MENORQ FINS FINE {:System.out.println("encontrada solicitud");:}
+;
+
+tipo_solicitud::=
+    CREARU inicio_param_usuario bloque_usuario1 LLAVEC CORCHETEC LLAVEC
+    | MODIFICARU inicio_param_usuario bloque_usuario2 LLAVEC CORCHETEC LLAVEC
+    | ELIMINARU inicio_param_usuario COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO COMILLAS LLAVEC CORCHETEC LLAVEC
+    | LOGINU inicio_param_usuario parametro_login LLAVEC CORCHETEC LLAVEC
+;
+
+inicio_param_usuario::=
+    COMILLAS MAYORQ LLAVEA COMILLAS CREDENCIALES COMILLAS DOSP CORCHETEA LLAVEA 
+;
+
+bloque_usuario1::=
+    bloque_usuario1 COMA parametros_crear
+    | parametros_crear
+;
+
+bloque_usuario2::=
+    bloque_usuario2 COMA parametros_modificarU
+    | parametros_modificarU
+;
+
+parametros_modificarU::=
+    parametro_usuario_antiguo
+    | parametro_usuario_nuevo
+    | parametro_contra_nueva
+    | parametro_fecha_modificacion
+;
+
+parametro_login::=
+    parametro_usuario COMA parametro_contra
+    | parametro_contra COMA parametro_usuario
+;
+
+parametros_crear::=
+    parametro_usuario {:System.out.println("encontrado parametro usuario");:}
+    | parametro_contra  {:System.out.println("encontrado parametro contraseña");:}
+    | parametro_fecha   {:System.out.println("encontrado parametro fecha");:}
+;
+
+parametro_usuario::=
+    COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_usuario_antiguo::=
+    COMILLAS USUARIOAP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_usuario_nuevo::=
+    COMILLAS USUARIONP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_contra::=
+    COMILLAS CONTRAP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_contra_nueva::=
+    COMILLAS NUEVOP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_fecha::=
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA COMILLAS
+;
+
+parametro_fecha_modificacion::=
+    COMILLAS FECHAMP COMILLAS DOSP COMILLAS FECHA COMILLAS
 ;
