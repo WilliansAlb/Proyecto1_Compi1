@@ -29,7 +29,7 @@ parser code
 :};
 
 terminal Linea, COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, Cadena, CREARU, USUARIOP, MODIFICARU, USUARIOAP, USUARIONP, NUEVOP,
-    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP,
+    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO,
     Parentesis_a, Parentesis_c, USUARIO, Contra, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
     LLAVEA, LLAVEC, CORCHETEA, CORCHETEC, P_coma, SOLICITUDESP, FINSOLICITUDES, MODIFICARF, PARAMF, AGREGARC, NOMBREC,
     Numero, ERROR, INICIOS, FINS, COMA, ID, URL, FORMULARIOC, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS,
@@ -37,7 +37,9 @@ terminal Linea, COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, Cadena, CREARU, U
 
 non terminal inicio, solicitud, bloque_usuario1, params, bloque_solicitudes, nueva_solicitud, tipo_solicitud, inicio_param_usuario,
     parametro_usuario, parametros_crear, parametro_contra, parametro_fecha, parametro_login, bloque_usuario2, parametros_modificarU,
-    parametro_usuario_antiguo, parametro_usuario_nuevo, parametro_contra_nueva, parametro_fecha_modificacion;
+    parametro_usuario_antiguo, parametro_usuario_nuevo, parametro_contra_nueva, parametro_fecha_modificacion, inicio_param_formulario,
+    bloque_formulario1, parametros_formulario, parametro_id, parametro_titulo, parametro_nombre, parametro_usuario_creacion,
+    parametro_tema, bloque_formulario2, parametros_formulario2;
 
 start with inicio;
 
@@ -60,10 +62,17 @@ tipo_solicitud::=
     | MODIFICARU inicio_param_usuario bloque_usuario2 LLAVEC CORCHETEC LLAVEC
     | ELIMINARU inicio_param_usuario COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO COMILLAS LLAVEC CORCHETEC LLAVEC
     | LOGINU inicio_param_usuario parametro_login LLAVEC CORCHETEC LLAVEC
+    | NUEVOFP inicio_param_formulario bloque_formulario1 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud formulario nuevo");:}
+    | ELIMINARF inicio_param_formulario parametro_id LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud eliminación de formulario");:}
+    | MODIFICARF inicio_param_formulario bloque_formulario2 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
 ;
 
 inicio_param_usuario::=
     COMILLAS MAYORQ LLAVEA COMILLAS CREDENCIALES COMILLAS DOSP CORCHETEA LLAVEA 
+;
+
+inicio_param_formulario::=
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA LLAVEA 
 ;
 
 bloque_usuario1::=
@@ -76,11 +85,43 @@ bloque_usuario2::=
     | parametros_modificarU
 ;
 
+bloque_formulario1::=
+    bloque_formulario1 COMA parametros_formulario
+    | parametros_formulario
+;
+
+bloque_formulario2::=
+    bloque_formulario2 COMA parametros_formulario2
+    | parametros_formulario2
+;   
+
+parametros_formulario2::=
+    parametro_id
+    | parametro_titulo
+    | parametro_nombre
+    | parametro_tema
+    | parametro_usuario_creacion
+    | parametro_fecha_modificacion
+;
+    
+parametros_formulario::=
+    parametro_id
+    | parametro_titulo
+    | parametro_nombre
+    | parametro_tema
+    | parametro_usuario_creacion
+    | parametro_fecha
+;
+
 parametros_modificarU::=
     parametro_usuario_antiguo
     | parametro_usuario_nuevo
     | parametro_contra_nueva
     | parametro_fecha_modificacion
+;
+
+parametro_tema::=
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA COMILLAS
 ;
 
 parametro_login::=
@@ -96,6 +137,10 @@ parametros_crear::=
 
 parametro_usuario::=
     COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_usuario_creacion::=
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO COMILLAS
 ;
 
 parametro_usuario_antiguo::=
@@ -120,4 +165,16 @@ parametro_fecha::=
 
 parametro_fecha_modificacion::=
     COMILLAS FECHAMP COMILLAS DOSP COMILLAS FECHA COMILLAS
+;
+
+parametro_id::=
+    COMILLAS IDP COMILLAS DOSP COMILLAS ID COMILLAS
+;
+
+parametro_titulo::=
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS TITULO COMILLAS
+;
+
+parametro_nombre::=
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO COMILLAS
 ;

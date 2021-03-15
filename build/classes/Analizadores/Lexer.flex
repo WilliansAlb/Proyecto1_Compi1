@@ -24,9 +24,6 @@ esp = [ ]+
 %}
 %%
 
-/* Comillas */
-( "\"" ) {return new Symbol(sym.COMILLAS, yycolumn, yyline, yytext());}
-
 /* Inicio de mas de una solicitud */
 ( "ini_solicitudes" ) {return new Symbol(sym.SOLICITUDESP, yycolumn, yyline, yytext());}
 
@@ -52,7 +49,7 @@ esp = [ ]+
 ( "fin_solicitud" ) {return new Symbol(sym.FINS,yycolumn,yyline,yytext());}
 
 /* Crear usuario */
-("CREAR_USUARIO") {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
+CREAR_USUARIO {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
 
 /* Usuario */
 ("USUARIO") {return new Symbol(sym.USUARIOP,yycolumn,yyline,yytext());}
@@ -189,6 +186,9 @@ esp = [ ]+
 /* Punto y coma */
 ( ";" ) {return new Symbol(sym.P_coma, yycolumn, yyline, yytext());}
 
+/* Comillas */
+( "\"" ) {return new Symbol(sym.COMILLAS, yycolumn, yyline, yytext());}
+
 /* ID */
 ("$"|"_"|"-")("$"|"_"|"-"|{D}|{L})* {return new Symbol(sym.ID,yycolumn,yyline,yytext());}
 
@@ -206,6 +206,9 @@ esp = [ ]+
 
 /*URL*/
 ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(sym.URL, yycolumn,yyline,yytext());}
+
+/*TITULO*/
+({L}|{D})({L}|{D}|{C}|{esp})* {return new Symbol(sym.TITULO, yycolumn, yyline, yytext());}
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}

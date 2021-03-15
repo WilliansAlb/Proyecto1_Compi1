@@ -10,12 +10,43 @@
     <fin_solicitud!>
     <!ini_solicitud:"MODIFICAR_USUARIO">
       { "CREDENCIALES_USUARIO":[{
-            "USUARIO_ANTIGUO": "juanito89",
-            "USUARIO_NUEVO": "papitoremolino23",
-            "NUEVO_PASSWORD": "papitoremolino23",
+            "USUARIO_ANTIGUO": " juanito89",
+            "USUARIO_NUEVO": " papitoremolino23",
+            "NUEVO_PASSWORD": " papitoremolino23",
             "FECHA_MODIFICACION": "1998-21-07"
            }         
          ]
       }
+    <fin_solicitud!>
+    <!ini_solicitud:"ELIMINAR_USUARIO">
+      { "CREDENCIALES_USUARIO":[{
+            "USUARIO": "juanito89"
+           }         
+         ]
+      }
+    <fin_solicitud!>
+    <!ini_solicitud:"LOGIN_USUARIO">
+      { "CREDENCIALES_USUARIO":[{
+            "USUARIO": "juanito89",
+            "PASSWORD": "holitajesusita12"
+           }         
+         ]
+      }
+    <fin_solicitud!>
+    <!ini_solicitud:"NUEVO_FORMULARIO">
+        { "PARAMETROS_FORMULARIO":[{
+                    "ID": "$form1",
+                    "TITULO": "Formulario para encuesta 1",
+                    "NOMBRE": "formulario_encuesta_1"
+                }         
+            ]
+        }
+    <fin_solicitud!>
+    <!ini_solicitud:"ELIMINAR_FORMULARIO">
+          { "PARAMETROS_FORMULARIO":[{
+                "ID": "$form1"
+               }         
+             ]
+          }
     <fin_solicitud!>
 <!fin_solicitudes>
