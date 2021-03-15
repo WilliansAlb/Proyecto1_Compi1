@@ -42,6 +42,9 @@ esp = [ ]+
 /* Mayor que */
 ( ">" ) {return new Symbol(sym.MAYORQ,yycolumn,yyline,yytext());}
 
+/* O */
+( "|" ) {return new Symbol(sym.OR,yycolumn,yyline,yytext());}
+
 /* Inicio de una solicitud */
 ( "ini_solicitud" ) {return new Symbol(sym.INICIOS, yycolumn, yyline, yytext());}
 
@@ -101,6 +104,24 @@ CREAR_USUARIO {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para tipos de temas*/
 ("dark"|"blue"|"white"|"DARK"|"BLUE"|"WHITE") {return new Symbol(sym.TEMA,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para tipos de temas*/
+("CENTRO"|"IZQUIERDA"|"DERECHA"|"JUSTIFICAR") {return new Symbol(sym.ALINEA,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para clases normales*/
+("CAMPO_TEXTO"|"FICHERO"|"BOTON") {return new Symbol(sym.CLASENORMAL,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para clases area texto*/
+("AREA_TEXTO") {return new Symbol(sym.CLASEAREA,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para clases con opciones*/
+("CHECKBOX"|"RADIO"|"COMBO") {return new Symbol(sym.CLASEOPCIONES,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para clases de imagen*/
+("IMAGEN") {return new Symbol(sym.CLASEIMAGEN,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para tipos de temas*/
+("SI"|"NO") {return new Symbol(sym.BOOL,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para eliminar formulario*/
 ("ELIMINAR_FORMULARIO") {return new Symbol(sym.ELIMINARF,yycolumn,yyline,yytext());}

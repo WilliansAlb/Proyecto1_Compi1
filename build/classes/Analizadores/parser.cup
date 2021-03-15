@@ -29,17 +29,19 @@ parser code
 :};
 
 terminal Linea, COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, Cadena, CREARU, USUARIOP, MODIFICARU, USUARIOAP, USUARIONP, NUEVOP,
-    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO,
+    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO, ALINEA, BOOL,
     Parentesis_a, Parentesis_c, USUARIO, Contra, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
     LLAVEA, LLAVEC, CORCHETEA, CORCHETEC, P_coma, SOLICITUDESP, FINSOLICITUDES, MODIFICARF, PARAMF, AGREGARC, NOMBREC,
     Numero, ERROR, INICIOS, FINS, COMA, ID, URL, FORMULARIOC, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS,
-    COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES;
+    COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN;
 
 non terminal inicio, solicitud, bloque_usuario1, params, bloque_solicitudes, nueva_solicitud, tipo_solicitud, inicio_param_usuario,
     parametro_usuario, parametros_crear, parametro_contra, parametro_fecha, parametro_login, bloque_usuario2, parametros_modificarU,
     parametro_usuario_antiguo, parametro_usuario_nuevo, parametro_contra_nueva, parametro_fecha_modificacion, inicio_param_formulario,
     bloque_formulario1, parametros_formulario, parametro_id, parametro_titulo, parametro_nombre, parametro_usuario_creacion,
-    parametro_tema, bloque_formulario2, parametros_formulario2;
+    parametro_tema, bloque_formulario2, parametros_formulario2, inicio_param_componente, bloque_componente1, parametros_agregar,
+    parametro_nombre_campo, parametro_formulario, parametro_clase, parametro_indice, parametro_texto, parametro_alineacion,
+    parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar;
 
 start with inicio;
 
@@ -65,6 +67,9 @@ tipo_solicitud::=
     | NUEVOFP inicio_param_formulario bloque_formulario1 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud formulario nuevo");:}
     | ELIMINARF inicio_param_formulario parametro_id LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud eliminación de formulario");:}
     | MODIFICARF inicio_param_formulario bloque_formulario2 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
+    | AGREGARC inicio_param_componente bloque_componente1 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
+    | ELIMINARC inicio_param_componente bloque_eliminar LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
+    | MODIFICARC inicio_param_componente bloque_componente1 LLAVEC CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
 ;
 
 inicio_param_usuario::=
@@ -75,9 +80,30 @@ inicio_param_formulario::=
     COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA LLAVEA 
 ;
 
+bloque_eliminar::=
+    parametro_id COMA parametro_formulario
+    | parametro_formulario COMA parametro_id
+;
+
+inicio_param_componente::=
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA LLAVEA 
+;
+
+bloque_componente1::=
+    bloque_componente1 COMA parametros_agregar
+    | parametros_agregar
+;
+
 bloque_usuario1::=
     bloque_usuario1 COMA parametros_crear
     | parametros_crear
+;
+
+parametros_agregar::=
+    parametro_id
+    | parametro_formulario
+    | parametro_nombre_campo
+    | parametro_clase
 ;
 
 bloque_usuario2::=
@@ -177,4 +203,53 @@ parametro_titulo::=
 
 parametro_nombre::=
     COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_nombre_campo::=
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_formulario::=
+    COMILLAS FORMULARIOC COMILLAS DOSP COMILLAS ID COMILLAS
+;
+
+parametro_clase::=
+    COMILLAS CLASE COMILLAS DOSP COMILLAS ID COMILLAS
+;
+
+parametro_indice::=
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS Numero COMILLAS
+;
+
+parametro_texto::=
+    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS TITULO COMILLAS
+;
+
+parametro_alineacion::=
+    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA COMILLAS
+;
+
+parametro_requerido::=
+    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL COMILLAS
+;
+
+parametro_opciones::=
+    COMILLAS OPCIONES COMILLAS DOSP COMILLAS bloque_opciones COMILLAS
+;
+
+bloque_opciones::=
+    bloque_opciones OR USUARIO
+    | USUARIO
+;
+
+parametro_filas::=
+    COMILLAS FILAS COMILLAS DOSP COMILLAS Numero COMILLAS
+;
+
+parametro_columnas::=
+    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS Numero COMILLAS
+;
+
+parametro_url::=
+    COMILLAS URLC COMILLAS DOSP COMILLAS URL COMILLAS
 ;
