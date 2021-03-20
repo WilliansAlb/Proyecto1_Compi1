@@ -15,9 +15,15 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -32,6 +38,18 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Element;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -142,11 +160,11 @@ public class Creacion extends javax.swing.JFrame {
         btn_cargar = new javax.swing.JButton();
         btn_limpiar = new javax.swing.JButton();
         jlabel_path = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Formularios");
         setMinimumSize(new java.awt.Dimension(620, 510));
-        setPreferredSize(new java.awt.Dimension(600, 500));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
@@ -211,6 +229,13 @@ public class Creacion extends javax.swing.JFrame {
 
         jlabel_path.setText("-");
 
+        jButton1.setText("Prueba");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,7 +251,10 @@ public class Creacion extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jlabel_path, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_limpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btn_limpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -241,7 +269,9 @@ public class Creacion extends javax.swing.JFrame {
                     .addComponent(btn_limpiar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(50, 50, 50)
+                .addGap(12, 12, 12)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -265,11 +295,11 @@ public class Creacion extends javax.swing.JFrame {
             File archivo = new File(chooser.getSelectedFile().getAbsolutePath());
             String path = chooser.getSelectedFile().getAbsolutePath();
             String nuevo = "";
-            
-            if (path.length()<40){
+
+            if (path.length() < 40) {
                 nuevo = path;
             } else {
-                nuevo = "..."+path.substring(path.length()-40, path.length());
+                nuevo = "..." + path.substring(path.length() - 40, path.length());
             }
             jlabel_path.setText(nuevo);
             String ST;
@@ -309,6 +339,14 @@ public class Creacion extends javax.swing.JFrame {
         textArea2.setEditable(true);
     }//GEN-LAST:event_formComponentResized
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            prueba2();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -343,10 +381,58 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void prueba() throws Exception{
+        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            final HttpPost httppost = new HttpPost("http://localhost:8080/Test1/Crear");
 
+            // It may be more appropriate to use FileEntity class in this particular
+            // instance but we are using a more generic InputStreamEntity to demonstrate
+            // the capability to stream out data from any arbitrary source
+            //
+            // FileEntity entity = new FileEntity(file, "binary/octet-stream");
+
+            httppost.setEntity(new StringEntity("hola"));
+
+            System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
+            try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
+                System.out.println("----------------------------------------");
+                System.out.println(response.getCode() + " " + response.getReasonPhrase());
+                System.out.println(EntityUtils.toString(response.getEntity()));
+            } catch (IOException | ParseException ex) {
+                java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void prueba2()throws Exception{
+        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            final HttpPost httppost = new HttpPost("http://localhost:8080/Test1/Crear");
+            List<NameValuePair> params = new ArrayList<>(2);
+            String texto = textArea.getText();
+            params.add(new BasicNameValuePair("hola", texto));
+            params.add(new BasicNameValuePair("hola2", "Hello!"));
+            httppost.setEntity(new UrlEncodedFormEntity(params,StandardCharsets.UTF_8));
+
+            System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
+            try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
+                System.out.println("----------------------------------------");
+                System.out.println(response.getCode() + " " + response.getReasonPhrase());
+                System.out.println(EntityUtils.toString(response.getEntity()));
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cargar;
     private javax.swing.JButton btn_limpiar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jlabel_path;
     private javax.swing.JPanel pan1;

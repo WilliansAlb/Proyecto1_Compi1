@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/Lexer.flex</file>
+            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/parserDB.cup</file>
             <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/forms/Forms.java</file>
+            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/LexerDB.java</file>
             <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/Generadores.java</file>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/parser.cup</file>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/sym.java</file>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/Lexer.java</file>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/prueba.txt</file>
-            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/forms/Creacion.java</file>
+            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/sym2.java</file>
+            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/LexerDB.flex</file>
+            <file>file:/C:/Users/willi/OneDrive/Documentos/NetBeansProjects/Forms/src/Analizadores/prueba2.txt</file>
         </group>
     </open-files>
 </project-private>

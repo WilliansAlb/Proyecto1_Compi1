@@ -6,7 +6,8 @@
 package forms;
 
 import Analizadores.Generadores;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import jflex.exceptions.SilentExit;
 
 /**
  *
@@ -17,8 +18,8 @@ public class Forms {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws UnsupportedEncodingException, Exception {
+    public static void main(String[] args) throws IOException, SilentExit, Exception {
         Generadores generar = new Generadores();
-        generar.generar();
+        generar.generar2();
     }
 }

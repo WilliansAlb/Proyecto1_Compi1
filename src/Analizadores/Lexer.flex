@@ -9,9 +9,9 @@ import java_cup.runtime.Symbol;
 %column
 %char
 %public
-L=[a-zA-Z_]+
+L=[a-zA-Z]+
 D=[0-9]+
-C=[%|#|&|(|)|?|¿|_|-]+
+C=[@_"-"%#&]+
 espacio=[ |\t|\r|\n]+
 esp = [ ]+
 %{
@@ -109,7 +109,7 @@ CREAR_USUARIO {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
 ("CENTRO"|"IZQUIERDA"|"DERECHA"|"JUSTIFICAR") {return new Symbol(sym.ALINEA,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para clases normales*/
-("CAMPO_TEXTO"|"FICHERO"|"BOTON") {return new Symbol(sym.CLASENORMAL,yycolumn,yyline,yytext());}
+("CAMPO_TEXTO"|"FICHERO") {return new Symbol(sym.CLASENORMAL,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para clases area texto*/
 ("AREA_TEXTO") {return new Symbol(sym.CLASEAREA,yycolumn,yyline,yytext());}
@@ -119,6 +119,9 @@ CREAR_USUARIO {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para clases de imagen*/
 ("IMAGEN") {return new Symbol(sym.CLASEIMAGEN,yycolumn,yyline,yytext());}
+
+/*Palabra reservada para clase de boton*/
+("BOTON") {return new Symbol(sym.CLASEBOTON,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para tipos de temas*/
 ("SI"|"NO") {return new Symbol(sym.BOOL,yycolumn,yyline,yytext());}
@@ -204,26 +207,20 @@ CREAR_USUARIO {return new Symbol(sym.CREARU,yycolumn,yyline,yytext());}
 /* Corchete de cierre */
 ( "]" ) {return new Symbol(sym.CORCHETEC, yycolumn, yyline, yytext());}
 
-/* Punto y coma */
-( ";" ) {return new Symbol(sym.P_coma, yycolumn, yyline, yytext());}
-
 /* Comillas */
 ( "\"" ) {return new Symbol(sym.COMILLAS, yycolumn, yyline, yytext());}
 
-/* ID */
-("$"|"_"|"-")("$"|"_"|"-"|{D}|{L})* {return new Symbol(sym.ID,yycolumn,yyline,yytext());}
-
 /* Numero */
-{D}+ {return new Symbol(sym.Numero, yycolumn, yyline, yytext());}
+{D}+|{D}+"."{D}+ {return new Symbol(sym.NUMERO, yycolumn, yyline, yytext());}
 
 /*Fecha*/
 {D}{4}"-"({D}{2}"-"|{D}"-")({D}{2}|{D}) {return new Symbol(sym.FECHA,yycolumn,yyline,yytext());}
 
 /*Usuario token*/
-{L}({L}|{D}|{C})* {return new Symbol(sym.USUARIO,yycolumn,yyline,yytext());}
+({L}|{D}|{C})+ {return new Symbol(sym.USUARIO,yycolumn,yyline,yytext());}
 
-/*Contraseña*/
-({L}|{D}|{C})+ {return new Symbol(sym.Contra,yycolumn,yyline,yytext());}
+/* ID */
+("$"|"_"|"-")("$"|"_"|"-"|{D}|{L})* {return new Symbol(sym.ID,yycolumn,yyline,yytext());}
 
 /*URL*/
 ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(sym.URL, yycolumn,yyline,yytext());}

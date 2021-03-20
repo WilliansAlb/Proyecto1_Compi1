@@ -4,7 +4,12 @@
             "USUARIO": "juanito89",
             "PASSWORD": "papitoremolino23",
             "FECHA_CREACION": "1998-21-07"
-           }         
+           },
+           {
+            "USUARIO": "juanito89",
+            "PASSWORD": "papitoremolino23",
+            "FECHA_CREACION": "1998-21-07"
+           }            
          ]
       }
     <fin_solicitud!>
@@ -20,7 +25,7 @@
     <fin_solicitud!>
     <!ini_solicitud:"ELIMINAR_USUARIO">
       { "CREDENCIALES_USUARIO":[{
-            "USUARIO": "juanito89"
+            "USUARIO": "juanito0-8"
            }         
          ]
       }
@@ -45,6 +50,20 @@
     <!ini_solicitud:"ELIMINAR_FORMULARIO">
           { "PARAMETROS_FORMULARIO":[{
                 "ID": "$form1"
+               }         
+             ]
+          }
+    <fin_solicitud!>
+    <!ini_solicitud:"AGREGAR_COMPONENTE">
+          { "PARAMETROS_COMPONENTE":[{
+                "ID": "$_grupo_paises",
+                "NOMBRE_CAMPO": "Pais",
+                "FORMULARIO": "$form1",
+                "CLASE": "COMBO",
+                "TEXTO_VISIBLE": "Pais de Origen ",
+                "ALINEACION": "CENTRO",
+                "REQUERIDO": "SI",
+                "OPCIONES": "Guatemala City|El Salvador|Honduras City|OTRO"
                }         
              ]
           }

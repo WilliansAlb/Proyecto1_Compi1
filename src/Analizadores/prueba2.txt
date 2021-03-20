@@ -1,0 +1,14 @@
+<!ini_solicitud:"CONSULTAR_DATOS">
+      { "CONSULTAS":[{
+            "CONSULTA-1": "SELECT TO FORM  ->  $form_encuesta_1  [ ] ",
+            "CONSULTA-2": "SELECT TO FORM  ->  $form_encuesta_1
+ 	                                                   [Cliente, Edad]
+                                                       WHERE [ Edad 
+                                                         >=  18 
+                                                                    AND NOT Cliente = 'Julio Paz' ]",
+            "CONSULTA-3": "SELECT TO FORM -> $form_encuesta_2 [Abecedario, Glosario, Pendensiario]
+                                                        WHERE [Abecedario = 25 AND Fecha = '1998-21-07']"
+           }         
+         ]
+      }
+<fin_solicitud!>

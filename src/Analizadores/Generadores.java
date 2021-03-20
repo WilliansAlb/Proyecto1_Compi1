@@ -58,28 +58,89 @@ public class Generadores {
         probar();
     }
 
+    public void generar2() throws UnsupportedEncodingException, SilentExit, IOException, Exception {
+        String path2 = System.getProperty("user.dir");
+        String decodedPath = URLDecoder.decode(path2, "UTF-8");
+        String[] rutaS = {"-parser", "parserDB", "-symbols", "sym2", decodedPath + "/src/Analizadores/parserDB.cup"};
+        String[] rutaS2 = {decodedPath + "/src/Analizadores/LexerDB.flex"};
+        jflex.Main.generate(rutaS2);
+        java_cup.Main.main(rutaS);
+
+        String dP = URLDecoder.decode(path2, "UTF-8");
+
+        Path rutaSym = Paths.get(dP + "/src/Analizadores/sym2.java");
+        if (Files.exists(rutaSym)) {
+            Files.delete(rutaSym);
+        }
+        Files.move(
+                Paths.get(dP + "/sym2.java"),
+                Paths.get(dP + "/src/Analizadores/sym2.java")
+        );
+        Path rutaSin = Paths.get(dP + "/src/Analizadores/parserDB.java");
+        if (Files.exists(rutaSin)) {
+            Files.delete(rutaSin);
+        }
+        Files.move(
+                Paths.get(dP + "/parserDB.java"),
+                Paths.get(dP + "/src/Analizadores/parserDB.java")
+        );
+        probar2();
+    }
+
     public void probar() throws UnsupportedEncodingException, FileNotFoundException, IOException {
         String path2 = System.getProperty("user.dir");
         String decodedPath = URLDecoder.decode(path2, "UTF-8");
         String ruta1 = decodedPath + "/src/Analizadores/prueba.txt";
         File archivo = new File(ruta1);
         Lexer nuevo = new Lexer(new FileReader(archivo));
-        while(true){
+        while (true) {
             Symbol n = nuevo.next_token();
-            if (n.value==null){
+            if (n.value == null) {
                 break;
             } else {
-                System.out.println("Valor del token: "+n.value+" Linea: "+n.right+" Columna: "+n.left);
+                System.out.println("Valor del token: " + n.value + " Linea: " + n.right + " Columna: " + n.left);
             }
         }
         probarSintactico();
     }
-    public void probarSintactico() throws UnsupportedEncodingException, FileNotFoundException{
+
+    public void probarSintactico() throws UnsupportedEncodingException, FileNotFoundException {
         String path2 = System.getProperty("user.dir");
         String decodedPath = URLDecoder.decode(path2, "UTF-8");
         String ruta1 = decodedPath + "/src/Analizadores/prueba.txt";
         File archivo = new File(ruta1);
         parser par = new parser(new Lexer(new FileReader(archivo)));
+        try {
+            par.parse();
+            System.out.println("analizado correctamente");
+        } catch (Exception ex) {
+            System.out.println("Error por: " + ex.toString());
+        }
+    }
+
+    public void probar2() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        String path2 = System.getProperty("user.dir");
+        String decodedPath = URLDecoder.decode(path2, "UTF-8");
+        String ruta1 = decodedPath + "/src/Analizadores/prueba2.txt";
+        File archivo = new File(ruta1);
+        LexerDB nuevo = new LexerDB(new FileReader(archivo));
+        while (true) {
+            Symbol n = nuevo.next_token();
+            if (n.value == null) {
+                break;
+            } else {
+                System.out.println("Valor del token: " + n.value + " Linea: " + n.right + " Columna: " + n.left);
+            }
+        }
+        probarSintactico2();
+    }
+
+    public void probarSintactico2() throws UnsupportedEncodingException, FileNotFoundException {
+        String path2 = System.getProperty("user.dir");
+        String decodedPath = URLDecoder.decode(path2, "UTF-8");
+        String ruta1 = decodedPath + "/src/Analizadores/prueba2.txt";
+        File archivo = new File(ruta1);
+        parserDB par = new parserDB(new LexerDB(new FileReader(archivo)));
         try {
             par.parse();
             System.out.println("analizado correctamente");
