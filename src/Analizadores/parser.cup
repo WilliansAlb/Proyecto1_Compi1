@@ -1,13 +1,33 @@
 package Analizadores;
 
 import java_cup.runtime.Symbol;
+import POJOS.Solicitud;
+import POJOS.Usuario;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 parser code
 {:
     private Symbol sym;
     
+    public Solicitud temporal = new Solicitud();
+    public Map<String,String> lista_temporal = new HashMap<>();
+    public ArrayList<Solicitud> lista_solicitudes = new ArrayList<>();
+    public Usuario logeado = new Usuario();
+    public Usuario retorno = new Usuario();
+
     public Symbol getS(){
         return this.sym;
+    }
+
+    public void agregarParametroAMap(String key, String valor){
+        if (lista_temporal.containsKey(key)){
+            temporal.setTieneErrores(true);
+            temporal.setDescripcion_error(temporal.getDescripcion_error()+"Existe ya un parametro para "+key+" y se está intentando enviar otro: "+valor+"\n");
+        } else {
+            lista_temporal.put(key,valor);
+        }
     }
 
     public void report_fatal_error(String message, Object info) {
@@ -44,6 +64,8 @@ non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solici
     parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar,
     tipos_de_clases, tipo_opcion, bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8;
 
+non terminal String tipo_palabra;
+
 start with inicio;
 
 inicio::=
@@ -61,43 +83,21 @@ solicitud::=
 ;
 
 tipo_solicitud::=
-    CREARU inicio_param_usuario bloque1 CORCHETEC LLAVEC
+    CREARU inicio_param_usuario bloque1 CORCHETEC LLAVEC {:temporal.setTipo("CREAR_USUARIO"); lista_solicitudes.add(temporal); temporal = new Solicitud(); logeado = new Usuario();:}
     | MODIFICARU inicio_param_usuario bloque2 CORCHETEC LLAVEC
     | ELIMINARU inicio_param_usuario bloque3 CORCHETEC LLAVEC
-    | LOGINU inicio_param_usuario LLAVEA parametro_login LLAVEC CORCHETEC LLAVEC
-    | NUEVOFP inicio_param_formulario bloque4 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud formulario nuevo");:}
-    | ELIMINARF inicio_param_formulario bloque5 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud eliminación de formulario");:}
-    | MODIFICARF inicio_param_formulario bloque6 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
-    | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
-    | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
-    | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC {:System.out.println("Encontrada solicitud modificación formulario");:}
-;
-
-inicio_param_usuario::=
-    COMILLAS MAYORQ LLAVEA COMILLAS CREDENCIALES COMILLAS DOSP CORCHETEA 
-;
-
-inicio_param_formulario::=
-    COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA 
-;
-
-bloque_eliminar::=
-    parametro_id COMA parametro_formulario
-    | parametro_formulario COMA parametro_id
-;
-
-inicio_param_componente::=
-    COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA 
-;
-
-bloque_componente1::=
-    bloque_componente1 COMA parametros_agregar
-    | parametros_agregar
+    | LOGINU inicio_param_usuario LLAVEA parametro_login LLAVEC CORCHETEC LLAVEC {:retorno = logeado; logeado = new Usuario();:}
+    | NUEVOFP inicio_param_formulario bloque4 CORCHETEC LLAVEC
+    | ELIMINARF inicio_param_formulario bloque5 CORCHETEC LLAVEC 
+    | MODIFICARF inicio_param_formulario bloque6 CORCHETEC LLAVEC
+    | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC 
+    | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC 
+    | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC
 ;
 
 bloque1::=
-    bloque1 COMA LLAVEA bloque_usuario1 LLAVEC
-    | LLAVEA bloque_usuario1 LLAVEC
+    bloque1 COMA LLAVEA bloque_usuario1 LLAVEC {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>();:}
+    | LLAVEA bloque_usuario1 LLAVEC {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>();:}
 ;
 
 bloque2::=
@@ -135,9 +135,52 @@ bloque8::=
     | LLAVEA bloque_eliminar LLAVEC
 ;
 
+inicio_param_usuario::=
+    COMILLAS MAYORQ LLAVEA COMILLAS CREDENCIALES COMILLAS DOSP CORCHETEA 
+;
+
+inicio_param_formulario::=
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA 
+;
+
+inicio_param_componente::=
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA 
+;
+
+bloque_eliminar::=
+    parametro_id COMA parametro_formulario
+    | parametro_formulario COMA parametro_id
+;
+
+bloque_componente1::=
+    bloque_componente1 COMA parametros_agregar
+    | parametros_agregar
+;
+
+parametros_agregar::=
+    parametro_id
+    | parametro_formulario
+    | parametro_nombre_campo
+    | parametro_clase
+    | parametro_indice
+    | parametro_texto
+    | parametro_alineacion
+    | parametro_opciones
+    | parametro_requerido
+    | parametro_filas
+    | parametro_columnas
+    | parametro_url
+;
+
 bloque_usuario1::=
     bloque_usuario1 COMA parametros_crear
     | parametros_crear
+;
+
+parametros_crear::=
+    parametro_usuario {:System.out.println("encontrado parametro usuario");:}
+    | parametro_contra  {:System.out.println("encontrado parametro contraseña");:}
+    | parametro_fecha   {:System.out.println("encontrado parametro fecha");:}
 ;
 
 bloque_usuario2::=
@@ -145,9 +188,25 @@ bloque_usuario2::=
     | parametros_modificarU
 ;
 
+parametros_modificarU::=
+    parametro_usuario_antiguo
+    | parametro_usuario_nuevo
+    | parametro_contra_nueva
+    | parametro_fecha_modificacion
+;
+
 bloque_formulario1::=
     bloque_formulario1 COMA parametros_formulario
     | parametros_formulario
+;
+    
+parametros_formulario::=
+    parametro_id
+    | parametro_titulo
+    | parametro_nombre
+    | parametro_tema
+    | parametro_usuario_creacion
+    | parametro_fecha
 ;
 
 bloque_formulario2::=
@@ -163,22 +222,6 @@ parametros_formulario2::=
     | parametro_usuario_creacion
     | parametro_fecha_modificacion
 ;
-    
-parametros_formulario::=
-    parametro_id
-    | parametro_titulo
-    | parametro_nombre
-    | parametro_tema
-    | parametro_usuario_creacion
-    | parametro_fecha
-;
-
-parametros_modificarU::=
-    parametro_usuario_antiguo
-    | parametro_usuario_nuevo
-    | parametro_contra_nueva
-    | parametro_fecha_modificacion
-;
 
 parametro_tema::=
     COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA COMILLAS
@@ -189,14 +232,8 @@ parametro_login::=
     | parametro_contra COMA parametro_usuario
 ;
 
-parametros_crear::=
-    parametro_usuario {:System.out.println("encontrado parametro usuario");:}
-    | parametro_contra  {:System.out.println("encontrado parametro contraseña");:}
-    | parametro_fecha   {:System.out.println("encontrado parametro fecha");:}
-;
-
 parametro_usuario::=
-    COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS {:agregarParametroAMap("USUARIO",e1.toString()); logeado.setUsuario(e1.toString());:}
 ;
 
 parametro_usuario_creacion::=
@@ -212,7 +249,7 @@ parametro_usuario_nuevo::=
 ;
 
 parametro_contra::=
-    COMILLAS CONTRAP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS CONTRAP COMILLAS DOSP COMILLAS tipo_palabra:e1 COMILLAS {:agregarParametroAMap("CONTRA",e1.toString()); logeado.setPassword(e1.toString());:}
 ;
 
 parametro_contra_nueva::=
@@ -220,7 +257,7 @@ parametro_contra_nueva::=
 ;
 
 parametro_fecha::=
-    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA COMILLAS
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA",e1.toString());:}
 ;
 
 parametro_fecha_modificacion::=
@@ -239,20 +276,6 @@ parametro_nombre::=
     COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO COMILLAS
 ;
 
-parametros_agregar::=
-    parametro_id
-    | parametro_formulario
-    | parametro_nombre_campo
-    | parametro_clase
-    | parametro_indice
-    | parametro_texto
-    | parametro_alineacion
-    | parametro_opciones
-    | parametro_requerido
-    | parametro_filas
-    | parametro_columnas
-    | parametro_url
-;
 parametro_nombre_campo::=
     COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO COMILLAS
 ;
@@ -301,6 +324,14 @@ bloque_opciones::=
 tipo_opcion::=
     TITULO
     | USUARIO
+    | ID
+    | NUMERO
+;
+
+tipo_palabra::=
+    USUARIO:e1 {:RESULT = e1.toString();:}
+    | ID:e1 {:RESULT = e1.toString();:}
+    | NUMERO:e1 {:RESULT = e1.toString();:}
 ;
 
 parametro_filas::=

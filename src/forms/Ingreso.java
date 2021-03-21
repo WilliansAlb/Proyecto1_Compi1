@@ -5,21 +5,38 @@
  */
 package forms;
 
+import com.google.gson.Gson;
 import java.awt.Color;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Element;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 /**
  *
  * @author willi
  */
 public class Ingreso extends javax.swing.JFrame {
+
     private static JTextArea textArea;
     private static JTextArea lines;
     private JScrollPane jsp;
+
     /**
      * Creates new form Ingreso
      */
@@ -62,6 +79,13 @@ public class Ingreso extends javax.swing.JFrame {
         jsp.setBounds(0, 0, panel_ingreso.getWidth(), panel_ingreso.getHeight());
         panel_ingreso.add(jsp);
         setLocationRelativeTo(null);
+        String ejemplo = "<html><! ini_solicitud:\"LOGIN_USUARIO\" ><br>";
+        ejemplo += "{ \"CREDENCIALES_USUARIO\":[{<br>";
+        ejemplo += "\"USUARIO\": \"TuUsuario\",<br>";
+        ejemplo += "\"PASSWORD\": \"TuContraseña\"<br>";
+        ejemplo += "}<br>]<br>}< fin_solicitud !>";
+
+        textArea.setToolTipText(ejemplo);
     }
 
     /**
@@ -99,6 +123,11 @@ public class Ingreso extends javax.swing.JFrame {
         );
 
         btn_ingreso.setText("INGRESAR");
+        btn_ingreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ingresoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,6 +158,14 @@ public class Ingreso extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_ingresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ingresoActionPerformed
+        try {
+            comunicacionServidor();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_ingresoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -163,6 +200,32 @@ public class Ingreso extends javax.swing.JFrame {
                 new Ingreso().setVisible(true);
             }
         });
+    }
+
+    public void comunicacionServidor() throws Exception {
+        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            final HttpPost httppost = new HttpPost("http://localhost:8080/WForms/Login");
+            List<NameValuePair> params = new ArrayList<>(2);
+            String texto = textArea.getText();
+            params.add(new BasicNameValuePair("login", texto));
+            params.add(new BasicNameValuePair("hola2", "Hello!"));
+            httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
+            System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
+            try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
+                System.out.println("----------------------------------------");
+                System.out.println(response.getCode() + " " + response.getReasonPhrase());
+                String respuesta = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                Map<String, String> map = gson.fromJson(respuesta, Map.class);
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    System.out.println("LLAVE: " + entry.getKey() + " VALOR: " + entry.getValue());
+                }
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

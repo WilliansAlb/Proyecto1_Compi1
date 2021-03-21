@@ -1,0 +1,7 @@
+db.usuarios(
+    {
+        "USUARIO": "ozymandias",
+        "PASSWORD": "5177",
+        "FECHA_CREACION": "1998-21-07"
+    }
+)

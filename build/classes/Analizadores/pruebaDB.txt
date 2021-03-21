@@ -1,0 +1,34 @@
+db.formularios(
+    {
+      "ID_FORM": "$id_form1",  
+      "TITULO": "Formulario para encuesta 1",
+      "NOMBRE": "formulario_encuesta_1",
+      "TEMA": "DARK",
+      "USUARIO_CREACION": "User_Juanito",
+      "FECHA_CREACION": "1998-21-07",
+      "COMPONENTES":(
+            {
+               "ID_COMP" : "$id_comp1", 
+               "NOMBRE_CAMPO" :  "VALOR_PARAMETRO_1", 
+               "CLASE" :  "BOTON"
+            },
+            {
+               "ID_COMP" : "$id_comp_n", 
+               "NOMBRE_CAMPO" :  "VALOR_PARAMETRO_1",
+               "CLASE" :  "IMAGEN"
+            }
+      ), 
+      "DATOS": (
+            {
+               "NOMBRE_CAMPO" : "Campo_1", 
+               "REGISTRO_1" :  "VALOR_REGISTRO_1",
+               "REGISTRO_5" :  "VALOR_REGISTRO_N"
+            },
+            {
+               "NOMBRE_CAMPO" : "Campo_N", 
+               "REGISTRO_1" :  "VALOR_REGISTRO_1",
+               "REGISTRO_6" :  "VALOR_REGISTRO_N"
+            }
+        )
+    }
+)

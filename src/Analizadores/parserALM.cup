@@ -1,0 +1,235 @@
+package Analizadores;
+
+import java_cup.runtime.Symbol;
+import POJOS.Usuario;
+import POJOS.Solicitud;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
+parser code
+{:
+    private Symbol sym;
+    
+    public ArrayList<Usuario> listado_usuarios = new ArrayList<>();
+
+    public Usuario usuario_temporal = new Usuario();
+
+    public Symbol getS(){
+        return this.sym;
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("reportfatal "+message+info);
+    }
+    public void report_fatal_error(Symbol cur) {
+        System.out.println("unrecovered_syntax_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println(symbl_name_from_id(expected_token_ids().get(0)));
+        System.out.println("syntaxerr: " + symbl_name_from_id(cur_token.sym) +" Linea: "+cur_token.right+" Columna: "+cur_token.left+" Valor:"+cur_token.value);
+    }
+
+    protected int error_sync_size() {
+        return 1;
+    }
+
+:};
+
+terminal COMILLAS, DOSP, FECHACP, TITULO, ALINEA, BOOL, OR, PARENTESISA, PARENTESISC, USUARIO, FECHA, IDF, IDC, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA,
+    LLAVEA, LLAVEC, NOMBREC, NUMERO, COMA, ID, URL, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS, USUARIOP, CONTRAP,
+    COLUMNAS, URLC, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON, INICIOFORM, INICIOUSUARIOS, COMPS, DATOS, NOREGISTRO;
+
+non terminal inicio, bloque_forms, bloque_usuarios, parametros_form, parametro_id, parametro_titulo, parametro_nombre, parametro_tema, parametro_user_creacion, parametro_fecha_creacion,
+    grupo_componentes, grupo_datos, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
+    parametro_texto, parametro_alineacion, parametro_opciones, parametro_requerido, parametro_filas, parametro_columnas, parametro_url, tipos_de_clases,
+    tipo_string, bloque_datos, parametros_datos, parametro_registro, tipo_ingreso, bloque_opciones, bloque_registros, parametros_usuarios,
+    parametro_usuario, parametro_password, bloque_param_compo;
+
+non terminal String tipo_junto;
+
+start with inicio;
+
+inicio::=
+    INICIOFORM PARENTESISA bloque_forms PARENTESISC
+    | INICIOUSUARIOS PARENTESISA bloque_usuarios PARENTESISC
+;
+
+bloque_forms::=
+    bloque_forms COMA LLAVEA parametros_form LLAVEC
+    | LLAVEA parametros_form LLAVEC
+;
+
+bloque_usuarios::=
+    bloque_usuarios COMA LLAVEA parametros_usuarios LLAVEC {:listado_usuarios.add(usuario_temporal); usuario_temporal = new Usuario();:}
+    | LLAVEA parametros_usuarios LLAVEC {:listado_usuarios.add(usuario_temporal); usuario_temporal = new Usuario();:}
+;
+
+parametros_usuarios::=
+    parametro_usuario COMA parametro_password COMA parametro_fecha_creacion
+;
+
+parametro_usuario::=
+    COMILLAS USUARIOP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS {:usuario_temporal.setUsuario(e1.toString());:}
+;
+
+parametro_password::=
+    COMILLAS CONTRAP COMILLAS DOSP COMILLAS tipo_junto:e1 COMILLAS {:usuario_temporal.setPassword(e1.toString());:}
+;
+
+parametros_form::=
+    parametro_id COMA parametro_titulo COMA parametro_nombre COMA parametro_tema COMA parametro_user_creacion COMA parametro_fecha_creacion COMA grupo_componentes COMA grupo_datos
+;
+
+parametro_id::=
+    COMILLAS IDF COMILLAS DOSP COMILLAS ID COMILLAS
+;
+
+parametro_user_creacion::=
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+parametro_fecha_creacion::=
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:usuario_temporal.setFecha(e1.toString());:}
+;
+
+parametro_titulo::=
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_string COMILLAS
+;
+
+parametro_nombre::=
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS tipo_junto COMILLAS
+;
+
+parametro_tema::=
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA COMILLAS
+;
+
+grupo_componentes::=
+    COMILLAS COMPS COMILLAS DOSP PARENTESISA bloque_componentes PARENTESISC
+;
+
+bloque_componentes::=
+    bloque_componentes COMA LLAVEA bloque_param_compo LLAVEC
+    | LLAVEA bloque_param_compo LLAVEC
+;
+
+bloque_param_compo::=
+    bloque_param_compo COMA parametros_componentes
+    | parametros_componentes
+;
+
+parametros_componentes::=
+    parametro_id_componente
+    | parametro_nombre_campo
+    | parametro_clase
+    | parametro_indice
+    | parametro_texto
+    | parametro_alineacion
+    | parametro_opciones
+    | parametro_requerido
+    | parametro_filas
+    | parametro_columnas
+    | parametro_url
+;
+
+tipo_string::=
+    TITULO
+    | USUARIO
+    | ID
+    | NUMERO
+;
+
+tipo_junto::=
+    USUARIO:e1 {:RESULT = e1.toString();:}
+    | ID:e1 {:RESULT = e1.toString();:}
+    | NUMERO:e1 {:RESULT = e1.toString();:}
+;
+
+parametro_id_componente::=
+    COMILLAS IDC COMILLAS DOSP COMILLAS ID COMILLAS
+;
+
+parametro_nombre_campo::=
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO COMILLAS
+;
+
+tipos_de_clases::=
+    CLASENORMAL
+    | CLASEAREA
+    | CLASEOPCIONES
+    | CLASEIMAGEN
+    | CLASEBOTON
+;
+
+parametro_clase::=
+    COMILLAS CLASE COMILLAS DOSP COMILLAS tipos_de_clases COMILLAS
+;
+
+parametro_indice::=
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO COMILLAS
+;
+
+parametro_texto::=
+    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS TITULO COMILLAS
+;
+
+parametro_alineacion::=
+    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA COMILLAS
+;
+
+parametro_requerido::=
+    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL COMILLAS
+;
+
+parametro_opciones::=
+    COMILLAS OPCIONES COMILLAS DOSP COMILLAS bloque_opciones COMILLAS
+;
+
+bloque_opciones::=
+    bloque_opciones OR tipo_string
+    | tipo_string
+;
+
+parametro_filas::=
+    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+;
+
+parametro_columnas::=
+    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+;
+
+parametro_url::=
+    COMILLAS URLC COMILLAS DOSP COMILLAS URL COMILLAS
+;
+
+grupo_datos::=
+    COMILLAS DATOS COMILLAS DOSP PARENTESISA bloque_datos PARENTESISC
+;
+
+bloque_datos::=
+    | bloque_datos COMA LLAVEA parametros_datos LLAVEC
+    | LLAVEA parametros_datos LLAVEC
+;
+
+parametros_datos::=
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS tipo_junto COMILLAS COMA bloque_registros
+;
+
+bloque_registros::=
+    bloque_registros COMA parametro_registro
+    | parametro_registro
+;
+
+parametro_registro::=
+    COMILLAS NOREGISTRO COMILLAS DOSP COMILLAS tipo_ingreso COMILLAS
+;
+
+tipo_ingreso::=
+    ID
+    | USUARIO
+    | TITULO
+    | FECHA
+    | NUMERO
+;

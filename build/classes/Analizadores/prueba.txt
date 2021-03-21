@@ -2,6 +2,7 @@
     <!ini_solicitud:"CREAR_USUARIO">
       { "CREDENCIALES_USUARIO":[{
             "USUARIO": "juanito89",
+            "USUARIO": "juanito7823",
             "PASSWORD": "papitoremolino23",
             "FECHA_CREACION": "1998-21-07"
            },
@@ -19,12 +20,21 @@
             "USUARIO_NUEVO": " papitoremolino23",
             "NUEVO_PASSWORD": " papitoremolino23",
             "FECHA_MODIFICACION": "1998-21-07"
-           }         
+           },
+           {
+            "USUARIO_ANTIGUO": " juanito89",
+            "USUARIO_NUEVO": " papitoremolino23",
+            "NUEVO_PASSWORD": " papitoremolino23",
+            "FECHA_MODIFICACION": "1998-21-07"
+           }            
          ]
       }
     <fin_solicitud!>
     <!ini_solicitud:"ELIMINAR_USUARIO">
       { "CREDENCIALES_USUARIO":[{
+            "USUARIO": "juanito0-8"
+           },
+           {
             "USUARIO": "juanito0-8"
            }         
          ]
