@@ -217,9 +217,17 @@ public class Ingreso extends javax.swing.JFrame {
                 String respuesta = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
                 Gson gson = new Gson();
                 Map<String, String> map = gson.fromJson(respuesta, Map.class);
-                for (Map.Entry<String, String> entry : map.entrySet()) {
-                    System.out.println("LLAVE: " + entry.getKey() + " VALOR: " + entry.getValue());
+                String resultado = (String) map.get("isCorrecto");
+                if (resultado.equals("true")){
+                    Creacion nuevo = new Creacion();
+                    nuevo.setVisible(true);
+                    this.setVisible(false);
+                } else {
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        System.out.println("LLAVE: " + entry.getKey() + " VALOR: " + entry.getValue());
+                    }
                 }
+                
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }

@@ -1,8 +1,7 @@
 package Analizadores;
 
 import java_cup.runtime.Symbol;
-import POJOS.Usuario;
-import POJOS.Solicitud;
+import POJOS.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -12,8 +11,12 @@ parser code
     private Symbol sym;
     
     public ArrayList<Usuario> listado_usuarios = new ArrayList<>();
+    public ArrayList<Formulario> listado_formularios = new ArrayList<>();
+    public ArrayList<Componente> listado_componentes = new ArrayList<>();
 
     public Usuario usuario_temporal = new Usuario();
+    public Formulario form_temporal = new Formulario();
+    public Componente comp_temporal = new Componente();
 
     public Symbol getS(){
         return this.sym;
@@ -38,16 +41,16 @@ parser code
 :};
 
 terminal COMILLAS, DOSP, FECHACP, TITULO, ALINEA, BOOL, OR, PARENTESISA, PARENTESISC, USUARIO, FECHA, IDF, IDC, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA,
-    LLAVEA, LLAVEC, NOMBREC, NUMERO, COMA, ID, URL, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS, USUARIOP, CONTRAP,
+    LLAVEA, LLAVEC, NOMBREC, NUMERO, COMA, ID, URL, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS, USUARIOP, CONTRAP, FECHAMP,
     COLUMNAS, URLC, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON, INICIOFORM, INICIOUSUARIOS, COMPS, DATOS, NOREGISTRO;
 
 non terminal inicio, bloque_forms, bloque_usuarios, parametros_form, parametro_id, parametro_titulo, parametro_nombre, parametro_tema, parametro_user_creacion, parametro_fecha_creacion,
     grupo_componentes, grupo_datos, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
-    parametro_texto, parametro_alineacion, parametro_opciones, parametro_requerido, parametro_filas, parametro_columnas, parametro_url, tipos_de_clases,
-    tipo_string, bloque_datos, parametros_datos, parametro_registro, tipo_ingreso, bloque_opciones, bloque_registros, parametros_usuarios,
-    parametro_usuario, parametro_password, bloque_param_compo;
+    parametro_texto, parametro_alineacion, parametro_opciones, parametro_requerido, parametro_filas, parametro_columnas, parametro_url,
+    bloque_datos, parametros_datos, parametro_registro, tipo_ingreso, bloque_opciones, bloque_registros, parametros_usuarios,
+    parametro_usuario, parametro_password, bloque_param_compo, opcional_usuario;
 
-non terminal String tipo_junto;
+non terminal String tipo_junto, tipos_de_clases;
 
 start with inicio;
 
@@ -57,8 +60,8 @@ inicio::=
 ;
 
 bloque_forms::=
-    bloque_forms COMA LLAVEA parametros_form LLAVEC
-    | LLAVEA parametros_form LLAVEC
+    bloque_forms COMA LLAVEA parametros_form LLAVEC {:listado_formularios.add(form_temporal); form_temporal = new Formulario();:}
+    | LLAVEA parametros_form LLAVEC  {:listado_formularios.add(form_temporal); form_temporal = new Formulario();:}
 ;
 
 bloque_usuarios::=
@@ -67,7 +70,11 @@ bloque_usuarios::=
 ;
 
 parametros_usuarios::=
-    parametro_usuario COMA parametro_password COMA parametro_fecha_creacion
+    parametro_usuario COMA parametro_password COMA parametro_fecha_creacion opcional_usuario
+;
+
+opcional_usuario::=
+    | COMA COMILLAS FECHAMP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:usuario_temporal.setFecha_mod(e1.toString());:}
 ;
 
 parametro_usuario::=
@@ -83,36 +90,36 @@ parametros_form::=
 ;
 
 parametro_id::=
-    COMILLAS IDF COMILLAS DOSP COMILLAS ID COMILLAS
+    COMILLAS IDF COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:form_temporal.setId(e1.toString());:}
 ;
 
 parametro_user_creacion::=
-    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS {:form_temporal.setUsuario(e1.toString());:}
 ;
 
 parametro_fecha_creacion::=
-    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:usuario_temporal.setFecha(e1.toString());:}
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:usuario_temporal.setFecha(e1.toString()); form_temporal.setFecha(e1.toString());:}
 ;
 
 parametro_titulo::=
-    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_string COMILLAS
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS {:form_temporal.setUsuario(e1.toString());:}
 ;
 
 parametro_nombre::=
-    COMILLAS NOMBREP COMILLAS DOSP COMILLAS tipo_junto COMILLAS
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS tipo_junto:e1 COMILLAS {:form_temporal.setNombre(e1.toString());:}
 ;
 
 parametro_tema::=
-    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA COMILLAS
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS          {:form_temporal.setTema(e1.toString());:}
 ;
 
 grupo_componentes::=
-    COMILLAS COMPS COMILLAS DOSP PARENTESISA bloque_componentes PARENTESISC
+    COMILLAS COMPS COMILLAS DOSP PARENTESISA bloque_componentes PARENTESISC {:form_temporal.setComponentes(listado_componentes); listado_componentes = new ArrayList<>();:}
 ;
 
 bloque_componentes::=
-    bloque_componentes COMA LLAVEA bloque_param_compo LLAVEC
-    | LLAVEA bloque_param_compo LLAVEC
+    bloque_componentes COMA LLAVEA bloque_param_compo LLAVEC {:listado_componentes.add(comp_temporal); comp_temporal = new Componente();:}
+    | LLAVEA bloque_param_compo LLAVEC                       {:listado_componentes.add(comp_temporal); comp_temporal = new Componente();:}
 ;
 
 bloque_param_compo::=
@@ -134,13 +141,6 @@ parametros_componentes::=
     | parametro_url
 ;
 
-tipo_string::=
-    TITULO
-    | USUARIO
-    | ID
-    | NUMERO
-;
-
 tipo_junto::=
     USUARIO:e1 {:RESULT = e1.toString();:}
     | ID:e1 {:RESULT = e1.toString();:}
@@ -148,39 +148,39 @@ tipo_junto::=
 ;
 
 parametro_id_componente::=
-    COMILLAS IDC COMILLAS DOSP COMILLAS ID COMILLAS
+    COMILLAS IDC COMILLAS DOSP COMILLAS ID:e1 COMILLAS              {:comp_temporal.setId(e1.toString());:}
 ;
 
 parametro_nombre_campo::=
-    COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS tipo_junto:e1 COMILLAS  {:comp_temporal.setNombre_campo(e1.toString());:}
 ;
 
 tipos_de_clases::=
-    CLASENORMAL
-    | CLASEAREA
-    | CLASEOPCIONES
-    | CLASEIMAGEN
-    | CLASEBOTON
+    CLASENORMAL:e1 {:RESULT = e1.toString();:}
+    | CLASEAREA:e1 {:RESULT = e1.toString();:}
+    | CLASEOPCIONES:e1 {:RESULT = e1.toString();:}
+    | CLASEIMAGEN:e1 {:RESULT = e1.toString();:}
+    | CLASEBOTON:e1 {:RESULT = e1.toString();:}
 ;
 
 parametro_clase::=
-    COMILLAS CLASE COMILLAS DOSP COMILLAS tipos_de_clases COMILLAS
+    COMILLAS CLASE COMILLAS DOSP COMILLAS tipos_de_clases:e1 COMILLAS  {:comp_temporal.setClase(e1.toString());:}
 ;
 
 parametro_indice::=
-    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS          {:comp_temporal.setIndice((int)e1);:}
 ;
 
 parametro_texto::=
-    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS TITULO COMILLAS
+    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS    {:comp_temporal.setTexto_visible(e1.toString());:}
 ;
 
 parametro_alineacion::=
-    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA COMILLAS
+    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA:e1 COMILLAS          {:comp_temporal.setAlineacion(e1.toString());:}
 ;
 
 parametro_requerido::=
-    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL COMILLAS
+    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL:e1 COMILLAS          {:comp_temporal.setRequerido(e1.toString());:}
 ;
 
 parametro_opciones::=
@@ -188,20 +188,20 @@ parametro_opciones::=
 ;
 
 bloque_opciones::=
-    bloque_opciones OR tipo_string
-    | tipo_string
+    bloque_opciones OR tipo_ingreso:e1                                  {:comp_temporal.getOpciones().add(e1.toString());:}                        
+    | tipo_ingreso:e1                                                   {:comp_temporal.getOpciones().add(e1.toString());:}
 ;
 
 parametro_filas::=
-    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS            {:comp_temporal.setFilas((int)e1);:}
 ;
 
 parametro_columnas::=
-    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS         {:comp_temporal.setColumnas((int)e1);:}
 ;
 
 parametro_url::=
-    COMILLAS URLC COMILLAS DOSP COMILLAS URL COMILLAS
+    COMILLAS URLC COMILLAS DOSP COMILLAS URL:e1 COMILLAS                {:comp_temporal.setUrl(e1.toString());:}
 ;
 
 grupo_datos::=
@@ -227,9 +227,9 @@ parametro_registro::=
 ;
 
 tipo_ingreso::=
-    ID
-    | USUARIO
-    | TITULO
-    | FECHA
-    | NUMERO
+    ID:e1 {:RESULT = e1.toString();:}
+    | USUARIO:e1 {:RESULT = e1.toString();:}
+    | TITULO:e1 {:RESULT = e1.toString();:}
+    | FECHA:e1 {:RESULT = e1.toString();:}
+    | NUMERO:e1 {:RESULT = e1.toString();:}
 ;

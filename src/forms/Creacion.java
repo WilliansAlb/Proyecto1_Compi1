@@ -5,6 +5,7 @@
  */
 package forms;
 
+import com.google.gson.Gson;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -63,12 +64,14 @@ public class Creacion extends javax.swing.JFrame {
     private static JTextArea textArea2;
     private static JTextArea lines2;
     private JScrollPane jsp2;
+    private String usuario_logeado;
 
     /**
      * Creates new form Creacion
      */
     public Creacion() {
         initComponents();
+        usuario_logeado = "";
         jsp = new JScrollPane();
         textArea = new JTextArea();
         lines = new JTextArea("1");
@@ -341,7 +344,7 @@ public class Creacion extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            prueba2();
+            comunicacionServidor();
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -381,8 +384,8 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void prueba() throws Exception{
+
+    public void prueba() throws Exception {
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost httppost = new HttpPost("http://localhost:8080/Test1/Crear");
 
@@ -391,7 +394,6 @@ public class Creacion extends javax.swing.JFrame {
             // the capability to stream out data from any arbitrary source
             //
             // FileEntity entity = new FileEntity(file, "binary/octet-stream");
-
             httppost.setEntity(new StringEntity("hola"));
 
             System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
@@ -406,21 +408,28 @@ public class Creacion extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    
-    public void prueba2()throws Exception{
+
+    public void comunicacionServidor() throws Exception {
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            final HttpPost httppost = new HttpPost("http://localhost:8080/Test1/Crear");
+            final HttpPost httppost = new HttpPost("http://localhost:8080/WForms/Creacion");
             List<NameValuePair> params = new ArrayList<>(2);
             String texto = textArea.getText();
-            params.add(new BasicNameValuePair("hola", texto));
-            params.add(new BasicNameValuePair("hola2", "Hello!"));
-            httppost.setEntity(new UrlEncodedFormEntity(params,StandardCharsets.UTF_8));
-
+            params.add(new BasicNameValuePair("entrada", texto));
+            params.add(new BasicNameValuePair("usuario", "ozymandias"));
+            httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
             try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
                 System.out.println("----------------------------------------");
                 System.out.println(response.getCode() + " " + response.getReasonPhrase());
-                System.out.println(EntityUtils.toString(response.getEntity()));
+                String respuesta = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                Map<String, String> map = gson.fromJson(respuesta, Map.class);
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    System.out.println("LLAVE: " + entry.getKey() + " VALOR: " + entry.getValue());
+                    if (entry.getKey().equals("respuesta")){
+                        textArea2.setText(entry.getValue());
+                    }
+                }
             } catch (IOException ex) {
                 java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
@@ -428,7 +437,15 @@ public class Creacion extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    
+
+    public String getUsuario_logeado() {
+        return usuario_logeado;
+    }
+
+    public void setUsuario_logeado(String usuario_logeado) {
+        this.usuario_logeado = usuario_logeado;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_cargar;
     private javax.swing.JButton btn_limpiar;

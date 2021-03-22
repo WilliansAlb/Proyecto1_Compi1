@@ -113,7 +113,6 @@ public class Generadores {
                 Paths.get(dP + "/parserALM.java"),
                 Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/parserALM.java")
         );
-        probarDB();
     }
 
     public void probar() throws UnsupportedEncodingException, FileNotFoundException, IOException {

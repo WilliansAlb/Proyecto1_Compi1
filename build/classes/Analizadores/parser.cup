@@ -16,6 +16,7 @@ parser code
     public ArrayList<Solicitud> lista_solicitudes = new ArrayList<>();
     public Usuario logeado = new Usuario();
     public Usuario retorno = new Usuario();
+    public String armando = "";
 
     public Symbol getS(){
         return this.sym;
@@ -62,9 +63,9 @@ non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solici
     parametro_tema, bloque_formulario2, parametros_formulario2, inicio_param_componente, bloque_componente1, parametros_agregar,
     parametro_nombre_campo, parametro_formulario, parametro_clase, parametro_indice, parametro_texto, parametro_alineacion,
     parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar,
-    tipos_de_clases, tipo_opcion, bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8;
+    bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8;
 
-non terminal String tipo_palabra;
+non terminal String tipo_palabra, tipo_opcion, tipos_de_clases;
 
 start with inicio;
 
@@ -79,60 +80,60 @@ bloque_solicitudes::=
 ;
 
 solicitud::=
-    INICIOE INICIOS DOSP COMILLAS tipo_solicitud MENORQ FINS FINE {:System.out.println("encontrada solicitud");:}
+    INICIOE INICIOS DOSP COMILLAS tipo_solicitud MENORQ FINS FINE {:lista_solicitudes.add(temporal); temporal = new Solicitud();:}
 ;
 
 tipo_solicitud::=
-    CREARU inicio_param_usuario bloque1 CORCHETEC LLAVEC {:temporal.setTipo("CREAR_USUARIO"); lista_solicitudes.add(temporal); temporal = new Solicitud(); logeado = new Usuario();:}
-    | MODIFICARU inicio_param_usuario bloque2 CORCHETEC LLAVEC
-    | ELIMINARU inicio_param_usuario bloque3 CORCHETEC LLAVEC
-    | LOGINU inicio_param_usuario LLAVEA parametro_login LLAVEC CORCHETEC LLAVEC {:retorno = logeado; logeado = new Usuario();:}
-    | NUEVOFP inicio_param_formulario bloque4 CORCHETEC LLAVEC
-    | ELIMINARF inicio_param_formulario bloque5 CORCHETEC LLAVEC 
-    | MODIFICARF inicio_param_formulario bloque6 CORCHETEC LLAVEC
-    | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC 
-    | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC 
-    | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC
+    CREARU inicio_param_usuario bloque1 CORCHETEC LLAVEC            {:temporal.setTipo("CREAR_USUARIO");  logeado = new Usuario();:}
+    | MODIFICARU inicio_param_usuario bloque2 CORCHETEC LLAVEC      {:temporal.setTipo("MODIFICAR_USUARIO");:}
+    | ELIMINARU inicio_param_usuario bloque3 CORCHETEC LLAVEC       {:temporal.setTipo("ELIMINAR_USUARIO");:}
+    | LOGINU inicio_param_usuario LLAVEA parametro_login LLAVEC CORCHETEC LLAVEC {:retorno = logeado; logeado = new Usuario(); temporal.setTipo("LOGIN");:}
+    | NUEVOFP inicio_param_formulario bloque4 CORCHETEC LLAVEC      {:temporal.setTipo("NUEVO_FORMULARIO");:}
+    | ELIMINARF inicio_param_formulario bloque5 CORCHETEC LLAVEC    {:temporal.setTipo("ELIMINAR_FORMULARIO");:}
+    | MODIFICARF inicio_param_formulario bloque6 CORCHETEC LLAVEC   {:temporal.setTipo("MODIFICAR_FORMULARIO");:}
+    | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC     {:temporal.setTipo("AGREGAR_COMPONENTE");:}
+    | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC    {:temporal.setTipo("ELIMINAR_COMPONENTE");:}
+    | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC   {:temporal.setTipo("MODIFICAR_COMPONENTE");:}
 ;
 
 bloque1::=
-    bloque1 COMA LLAVEA bloque_usuario1 LLAVEC {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>();:}
-    | LLAVEA bloque_usuario1 LLAVEC {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>();:}
+    bloque1 COMA LLAVEA bloque_usuario1 LLAVEC      {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_usuario1 LLAVEC                 {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque2::=
-    bloque2 COMA LLAVEA bloque_usuario2 LLAVEC
-    | LLAVEA bloque_usuario2 LLAVEC
+    bloque2 COMA LLAVEA bloque_usuario2 LLAVEC      {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_usuario2 LLAVEC                 {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque3::=
-    bloque3 COMA LLAVEA parametro_usuario LLAVEC
-    | LLAVEA parametro_usuario LLAVEC
+    bloque3 COMA LLAVEA parametro_usuario LLAVEC    {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA parametro_usuario LLAVEC               {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque4::=
-    bloque4 COMA LLAVEA bloque_formulario1 LLAVEC
-    | LLAVEA bloque_formulario1 LLAVEC
+    bloque4 COMA LLAVEA bloque_formulario1 LLAVEC   {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_formulario1 LLAVEC              {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque5::=
-    bloque5 COMA LLAVEA parametro_id LLAVEC
-    | LLAVEA parametro_id LLAVEC
+    bloque5 COMA LLAVEA parametro_id LLAVEC         {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA parametro_id LLAVEC                    {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque6::=
-    bloque6 COMA LLAVEA bloque_formulario2 LLAVEC
-    | LLAVEA bloque_formulario2 LLAVEC
+    bloque6 COMA LLAVEA bloque_formulario2 LLAVEC   {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_formulario2 LLAVEC              {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque7::=
-    bloque7 COMA LLAVEA bloque_componente1 LLAVEC
-    | LLAVEA bloque_componente1 LLAVEC
+    bloque7 COMA LLAVEA bloque_componente1 LLAVEC   {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_componente1 LLAVEC              {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 bloque8::=
-    bloque8 COMA LLAVEA bloque_eliminar LLAVEC
-    | LLAVEA bloque_eliminar LLAVEC
+    bloque8 COMA LLAVEA bloque_eliminar LLAVEC      {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | LLAVEA bloque_eliminar LLAVEC                 {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 inicio_param_usuario::=
@@ -224,7 +225,7 @@ parametros_formulario2::=
 ;
 
 parametro_tema::=
-    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA COMILLAS
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS                      {:agregarParametroAMap("TEMA",e1.toString()); :}
 ;
 
 parametro_login::=
@@ -237,23 +238,23 @@ parametro_usuario::=
 ;
 
 parametro_usuario_creacion::=
-    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS              {:agregarParametroAMap("USUARIO_CREACION",e1.toString()); :}
 ;
 
 parametro_usuario_antiguo::=
-    COMILLAS USUARIOAP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS USUARIOAP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS           {:agregarParametroAMap("USUARIO_ANTIGUO",e1.toString()); :}
 ;
 
 parametro_usuario_nuevo::=
-    COMILLAS USUARIONP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS USUARIONP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS           {:agregarParametroAMap("USUARIO_NUEVO",e1.toString()); :}
 ;
 
 parametro_contra::=
-    COMILLAS CONTRAP COMILLAS DOSP COMILLAS tipo_palabra:e1 COMILLAS {:agregarParametroAMap("CONTRA",e1.toString()); logeado.setPassword(e1.toString());:}
+    COMILLAS CONTRAP COMILLAS DOSP COMILLAS tipo_palabra:e1 COMILLAS    {:agregarParametroAMap("CONTRA",e1.toString()); logeado.setPassword(e1.toString());:}
 ;
 
 parametro_contra_nueva::=
-    COMILLAS NUEVOP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS NUEVOP COMILLAS DOSP COMILLAS tipo_palabra:e1 COMILLAS     {:agregarParametroAMap("CONTRA_NUEVA",e1.toString());:}
 ;
 
 parametro_fecha::=
@@ -261,71 +262,71 @@ parametro_fecha::=
 ;
 
 parametro_fecha_modificacion::=
-    COMILLAS FECHAMP COMILLAS DOSP COMILLAS FECHA COMILLAS
+    COMILLAS FECHAMP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA_MODIFICACION",e1.toString());:}
 ;
 
 parametro_id::=
-    COMILLAS IDP COMILLAS DOSP COMILLAS ID COMILLAS
+    COMILLAS IDP COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:agregarParametroAMap("ID",e1.toString());:}
 ;
 
 parametro_titulo::=
-    COMILLAS TITULOP COMILLAS DOSP COMILLAS TITULO COMILLAS
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS     {:agregarParametroAMap("TITULO",e1.toString());:}
 ;
 
 parametro_nombre::=
-    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE",e1.toString());:}
 ;
 
 parametro_nombre_campo::=
-    COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO COMILLAS
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE_CAMPO",e1.toString());:}
 ;
 
 parametro_formulario::=
-    COMILLAS FORMULARIOC COMILLAS DOSP COMILLAS ID COMILLAS
+    COMILLAS FORMULARIOC COMILLAS DOSP COMILLAS ID:e1 COMILLAS             {:agregarParametroAMap("FORMULARIO",e1.toString());:}
 ;
 
 tipos_de_clases::=
-    CLASENORMAL
-    | CLASEAREA
-    | CLASEOPCIONES
-    | CLASEIMAGEN
-    | CLASEBOTON
+    CLASENORMAL:e1         {:RESULT = e1.toString();:}
+    | CLASEAREA:e1         {:RESULT = e1.toString();:}
+    | CLASEOPCIONES:e1     {:RESULT = e1.toString();:}
+    | CLASEIMAGEN:e1       {:RESULT = e1.toString();:}
+    | CLASEBOTON:e1        {:RESULT = e1.toString();:}
 ;
 
 parametro_clase::=
-    COMILLAS CLASE COMILLAS DOSP COMILLAS tipos_de_clases COMILLAS
+    COMILLAS CLASE COMILLAS DOSP COMILLAS tipos_de_clases:e1 COMILLAS       {:agregarParametroAMap("CLASE",e1.toString());:}
 ;
 
 parametro_indice::=
-    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS              {:agregarParametroAMap("CLASE",e1.toString());:}
 ;
 
 parametro_texto::=
-    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS TITULO COMILLAS
+    COMILLAS TEXTOVC COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS         {:agregarParametroAMap("TEXTO_VISIBLE",e1.toString());:}
 ;
 
 parametro_alineacion::=
-    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA COMILLAS
+    COMILLAS ALINEAC COMILLAS DOSP COMILLAS ALINEA:e1 COMILLAS              {:agregarParametroAMap("ALINEACION",e1.toString());:}
 ;
 
 parametro_requerido::=
-    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL COMILLAS
+    COMILLAS REQUERIDO COMILLAS DOSP COMILLAS BOOL:e1 COMILLAS              {:agregarParametroAMap("REQUERIDO",e1.toString());:}
 ;
 
 parametro_opciones::=
-    COMILLAS OPCIONES COMILLAS DOSP COMILLAS bloque_opciones COMILLAS
+    COMILLAS OPCIONES COMILLAS DOSP COMILLAS bloque_opciones COMILLAS       {:agregarParametroAMap("OPCIONES",armando); armando = "";:}
 ;
 
 bloque_opciones::=
-    bloque_opciones OR tipo_opcion
-    | tipo_opcion
+    bloque_opciones OR tipo_opcion:e1                                       {:armando += e1.toString()+"\n";:}
+    | tipo_opcion:e1                                                        {:armando += e1.toString()+"\n";:}
 ;
 
 tipo_opcion::=
-    TITULO
-    | USUARIO
-    | ID
-    | NUMERO
+    TITULO:e1       {:RESULT = e1.toString();:}
+    | USUARIO:e1    {:RESULT = e1.toString();:}
+    | ID:e1         {:RESULT = e1.toString();:}
+    | NUMERO:e1     {:RESULT = e1.toString();:}
 ;
 
 tipo_palabra::=
@@ -335,13 +336,13 @@ tipo_palabra::=
 ;
 
 parametro_filas::=
-    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS                {:agregarParametroAMap("FILAS",e1.toString());:}
 ;
 
 parametro_columnas::=
-    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO COMILLAS
+    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS             {:agregarParametroAMap("COLUMNAS",e1.toString());:}
 ;
 
 parametro_url::=
-    COMILLAS URLC COMILLAS DOSP COMILLAS URL COMILLAS
+    COMILLAS URLC COMILLAS DOSP COMILLAS URL:e1 COMILLAS                    {:agregarParametroAMap("URL",e1.toString());:}
 ;

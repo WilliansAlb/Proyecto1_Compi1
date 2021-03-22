@@ -50,6 +50,9 @@ esp = [ ]+
 /*Fecha de creación*/
 ("FECHA_CREACION") {return new Symbol(symALM.FECHACP,yycolumn,yyline,yytext());}
 
+/*Fecha de creación*/
+("FECHA_MODIFICACION") {return new Symbol(symALM.FECHAMP,yycolumn,yyline,yytext());}
+
 /*Palabra reservada para ID*/
 ("ID_FORM") {return new Symbol(symALM.IDF,yycolumn,yyline,yytext());}
 
