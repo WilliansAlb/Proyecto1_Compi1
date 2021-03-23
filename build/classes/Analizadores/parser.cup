@@ -179,9 +179,9 @@ bloque_usuario1::=
 ;
 
 parametros_crear::=
-    parametro_usuario {:System.out.println("encontrado parametro usuario");:}
-    | parametro_contra  {:System.out.println("encontrado parametro contraseña");:}
-    | parametro_fecha   {:System.out.println("encontrado parametro fecha");:}
+    parametro_usuario
+    | parametro_contra
+    | parametro_fecha 
 ;
 
 bloque_usuario2::=
@@ -220,12 +220,10 @@ parametros_formulario2::=
     | parametro_titulo
     | parametro_nombre
     | parametro_tema
-    | parametro_usuario_creacion
-    | parametro_fecha_modificacion
 ;
 
 parametro_tema::=
-    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS                      {:agregarParametroAMap("TEMA",e1.toString()); :}
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS                      {:agregarParametroAMap("TEMA",e1.toString());System.out.println("ingresado tema"); :}
 ;
 
 parametro_login::=
@@ -238,7 +236,7 @@ parametro_usuario::=
 ;
 
 parametro_usuario_creacion::=
-    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS              {:agregarParametroAMap("USUARIO_CREACION",e1.toString()); :}
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS              {:agregarParametroAMap("USUARIO_CREACION",e1.toString()); System.out.println("ingresado usuario creacion");:}
 ;
 
 parametro_usuario_antiguo::=
@@ -258,7 +256,7 @@ parametro_contra_nueva::=
 ;
 
 parametro_fecha::=
-    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA",e1.toString());:}
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA",e1.toString());System.out.println("ingresado usuario creacion");:}
 ;
 
 parametro_fecha_modificacion::=
@@ -266,15 +264,15 @@ parametro_fecha_modificacion::=
 ;
 
 parametro_id::=
-    COMILLAS IDP COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:agregarParametroAMap("ID",e1.toString());:}
+    COMILLAS IDP COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:agregarParametroAMap("ID",e1.toString()); System.out.println("ingresado id");:}
 ;
 
 parametro_titulo::=
-    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS     {:agregarParametroAMap("TITULO",e1.toString());:}
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS     {:agregarParametroAMap("TITULO",e1.toString()); System.out.println("ingresado titulo");:}
 ;
 
 parametro_nombre::=
-    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE",e1.toString());:}
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE",e1.toString()); System.out.println("ingresado nombre");:}
 ;
 
 parametro_nombre_campo::=

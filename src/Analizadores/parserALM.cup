@@ -102,7 +102,7 @@ parametro_fecha_creacion::=
 ;
 
 parametro_titulo::=
-    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS {:form_temporal.setUsuario(e1.toString());:}
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS {:form_temporal.setTitulo(e1.toString());:}
 ;
 
 parametro_nombre::=
@@ -118,7 +118,7 @@ grupo_componentes::=
 ;
 
 bloque_componentes::=
-    bloque_componentes COMA LLAVEA bloque_param_compo LLAVEC {:listado_componentes.add(comp_temporal); comp_temporal = new Componente();:}
+    | bloque_componentes COMA LLAVEA bloque_param_compo LLAVEC {:listado_componentes.add(comp_temporal); comp_temporal = new Componente();:}
     | LLAVEA bloque_param_compo LLAVEC                       {:listado_componentes.add(comp_temporal); comp_temporal = new Componente();:}
 ;
 
