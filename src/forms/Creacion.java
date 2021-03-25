@@ -8,8 +8,11 @@ package forms;
 import com.google.gson.Gson;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -51,6 +54,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.nio.charset.StandardCharsets;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -62,6 +66,7 @@ public class Creacion extends javax.swing.JFrame {
     private static JTextArea lines;
     private JScrollPane jsp;
     private static JTextArea textArea2;
+    private static JTextPane textPane;
     private static JTextArea lines2;
     private JScrollPane jsp2;
     private String usuario_logeado;
@@ -71,80 +76,38 @@ public class Creacion extends javax.swing.JFrame {
      */
     public Creacion() {
         initComponents();
+        getContentPane().setBackground(Color.BLACK);
         usuario_logeado = "";
         jsp = new JScrollPane();
         textArea = new JTextArea();
-        lines = new JTextArea("1");
-        lines.setBackground(Color.LIGHT_GRAY);
-        lines.setEditable(false);
-        //  Code to implement line numbers inside the JTextArea
-        textArea.getDocument().addDocumentListener(new DocumentListener() {
-            public String getText() {
-                int caretPosition = textArea.getDocument().getLength();
-                Element root = textArea.getDocument().getDefaultRootElement();
-                String text = "1" + System.getProperty("line.separator");
-                for (int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
-                    text += i + System.getProperty("line.separator");
-                }
-                return text;
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent de) {
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent de) {
-                lines.setText(getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent de) {
-                lines.setText(getText());
-            }
-
-        });
+        TextLineNumber tln = new TextLineNumber(textArea);
+        tln.setBorderGap(1);
+        tln.setBackground(Color.BLACK);
+        tln.setForeground(Color.WHITE);
+        tln.setCurrentLineForeground(Color.YELLOW);
+        textArea.setBackground(new Color(97,97,97));
         jsp.getViewport().add(textArea);
-        jsp.setRowHeaderView(lines);
+        jsp.setBorder(null);
+        jsp.setRowHeaderView(tln);
         jsp.setBounds(0, 0, pan1.getWidth(), pan1.getHeight());
-
         jsp2 = new JScrollPane();
         textArea2 = new JTextArea();
-        lines2 = new JTextArea("1");
-        lines2.setBackground(Color.LIGHT_GRAY);
-        lines2.setEditable(false);
-        //  Code to implement line numbers inside the JTextArea
-        textArea2.getDocument().addDocumentListener(new DocumentListener() {
-            public String getText() {
-                int caretPosition = textArea2.getDocument().getLength();
-                Element root = textArea2.getDocument().getDefaultRootElement();
-                String text = "1" + System.getProperty("line.separator");
-                for (int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
-                    text += i + System.getProperty("line.separator");
-                }
-                return text;
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent de) {
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent de) {
-                lines2.setText(getText());
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent de) {
-                lines2.setText(getText());
-            }
-
-        });
+        textArea2.setBackground(new Color(97,97,97));
+        textPane = new JTextPane();
+        textPane.setOpaque(false);
+        textPane.setBackground(new Color(97,97,97));
         jsp2.getViewport().add(textArea2);
-        jsp2.setRowHeaderView(lines2);
+        TextLineNumber tln2 = new TextLineNumber(textArea2);
+        tln2.setBorderGap(1);
+        tln2.setBackground(Color.BLACK);
+        tln2.setForeground(Color.WHITE);
+        tln2.setCurrentLineForeground(Color.YELLOW);
+        jsp2.setRowHeaderView(tln2);
+        jsp2.setBorder(null);
         jsp2.setBounds(0, 0, pan2.getWidth(), pan2.getHeight());
         pan2.add(jsp2);
         pan1.add(jsp);
+        pan2.setBackground(new Color(97,97,97));
         setLocationRelativeTo(null);
     }
 
@@ -157,16 +120,20 @@ public class Creacion extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pan1 = new javax.swing.JPanel();
-        pan2 = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         btn_cargar = new javax.swing.JButton();
         btn_limpiar = new javax.swing.JButton();
         jlabel_path = new javax.swing.JLabel();
+        pan1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        pan2 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Formularios");
+        setBackground(new java.awt.Color(25, 25, 25));
         setMinimumSize(new java.awt.Dimension(620, 510));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
@@ -174,42 +141,10 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
 
-        pan1.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                pan1ComponentResized(evt);
-            }
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                pan1ComponentShown(evt);
-            }
-        });
+        jTabbedPane1.setBackground(new java.awt.Color(25, 25, 25));
+        jTabbedPane1.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        javax.swing.GroupLayout pan1Layout = new javax.swing.GroupLayout(pan1);
-        pan1.setLayout(pan1Layout);
-        pan1Layout.setHorizontalGroup(
-            pan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        pan1Layout.setVerticalGroup(
-            pan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 165, Short.MAX_VALUE)
-        );
-
-        pan2.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                pan2ComponentResized(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pan2Layout = new javax.swing.GroupLayout(pan2);
-        pan2.setLayout(pan2Layout);
-        pan2Layout.setHorizontalGroup(
-            pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        pan2Layout.setVerticalGroup(
-            pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
-        );
+        jPanel1.setBackground(new java.awt.Color(25, 25, 25));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -232,6 +167,26 @@ public class Creacion extends javax.swing.JFrame {
 
         jlabel_path.setText("-");
 
+        pan1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                pan1ComponentResized(evt);
+            }
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                pan1ComponentShown(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan1Layout = new javax.swing.GroupLayout(pan1);
+        pan1.setLayout(pan1Layout);
+        pan1Layout.setHorizontalGroup(
+            pan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pan1Layout.setVerticalGroup(
+            pan1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 158, Short.MAX_VALUE)
+        );
+
         jButton1.setText("Prueba");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,44 +194,91 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
 
+        pan2.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                pan2ComponentResized(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan2Layout = new javax.swing.GroupLayout(pan2);
+        pan2.setLayout(pan2Layout);
+        pan2Layout.setHorizontalGroup(
+            pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pan2Layout.setVerticalGroup(
+            pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 194, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btn_cargar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(183, 183, 183)
+                                .addComponent(btn_limpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlabel_path, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(pan2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pan1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(77, 77, 77)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_cargar)
+                    .addComponent(btn_limpiar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jlabel_path))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("INGRESO DE SOLICITUDES", jPanel1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 648, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 470, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("INGRESO DE CONSULTAS", jPanel2);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pan2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_cargar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jlabel_path, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_limpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_cargar)
-                    .addComponent(jlabel_path)
-                    .addComponent(btn_limpiar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(12, 12, 12)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
         );
 
         pack();
@@ -385,30 +387,6 @@ public class Creacion extends javax.swing.JFrame {
         });
     }
 
-    public void prueba() throws Exception {
-        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            final HttpPost httppost = new HttpPost("http://localhost:8080/Test1/Crear");
-
-            // It may be more appropriate to use FileEntity class in this particular
-            // instance but we are using a more generic InputStreamEntity to demonstrate
-            // the capability to stream out data from any arbitrary source
-            //
-            // FileEntity entity = new FileEntity(file, "binary/octet-stream");
-            httppost.setEntity(new StringEntity("hola"));
-
-            System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
-            try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
-                System.out.println("----------------------------------------");
-                System.out.println(response.getCode() + " " + response.getReasonPhrase());
-                System.out.println(EntityUtils.toString(response.getEntity()));
-            } catch (IOException | ParseException ex) {
-                java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-        } catch (URISyntaxException ex) {
-            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-    }
-
     public void comunicacionServidor() throws Exception {
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost httppost = new HttpPost("http://localhost:8080/WForms/Creacion");
@@ -451,6 +429,9 @@ public class Creacion extends javax.swing.JFrame {
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel jlabel_path;
     private javax.swing.JPanel pan1;
     private javax.swing.JPanel pan2;

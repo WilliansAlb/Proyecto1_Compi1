@@ -20,6 +20,6 @@ public class Forms {
      */
     public static void main(String[] args) throws IOException, SilentExit, Exception {
         Generadores generar = new Generadores();
-        generar.generarAlmacenamiento();
+        generar.generar4();
     }
 }

@@ -296,7 +296,7 @@ parametro_clase::=
 ;
 
 parametro_indice::=
-    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS              {:agregarParametroAMap("CLASE",e1.toString());:}
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS              {:agregarParametroAMap("INDICE",e1.toString());:}
 ;
 
 parametro_texto::=

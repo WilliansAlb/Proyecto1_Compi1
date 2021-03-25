@@ -168,7 +168,7 @@ parametro_clase::=
 ;
 
 parametro_indice::=
-    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS          {:comp_temporal.setIndice((int)e1);:}
+    COMILLAS INDICEC COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS          {:comp_temporal.setIndice(Integer.parseInt(e1.toString()));:}
 ;
 
 parametro_texto::=
