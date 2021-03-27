@@ -35,7 +35,7 @@ terminal COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, CREARU, USUARIOP, MODIFI
     COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON;
 
 non terminal inicio, bloque_consultas, descripcion_consulta, campo, nombre_campos, campos, continuacion, condiciones, condicion,
-    tipo_dato, not, compara;
+    tipo_dato, not, compara, dato_S;
 
 start with inicio;
 
@@ -82,8 +82,12 @@ condicion::=
 
 tipo_dato::=
     NUMERO
-    | TITULO
-    | APOSTROFE FECHA APOSTROFE
+    | APOSTROFE dato_s APOSTROFE
+;
+
+dato_s::=
+    TITULO
+    | FECHA
 ;
 
 not::=

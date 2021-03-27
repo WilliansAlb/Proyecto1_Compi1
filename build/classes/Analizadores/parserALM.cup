@@ -13,10 +13,12 @@ parser code
     public ArrayList<Usuario> listado_usuarios = new ArrayList<>();
     public ArrayList<Formulario> listado_formularios = new ArrayList<>();
     public ArrayList<Componente> listado_componentes = new ArrayList<>();
+    public ArrayList<String> reg = new ArrayList<>();
 
     public Usuario usuario_temporal = new Usuario();
     public Formulario form_temporal = new Formulario();
     public Componente comp_temporal = new Componente();
+    public Registro reg_temporal = new Registro();
 
     public Symbol getS(){
         return this.sym;
@@ -48,7 +50,7 @@ non terminal inicio, bloque_forms, bloque_usuarios, parametros_form, parametro_i
     grupo_componentes, grupo_datos, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
     parametro_texto, parametro_alineacion, parametro_opciones, parametro_requerido, parametro_filas, parametro_columnas, parametro_url,
     bloque_datos, parametros_datos, parametro_registro, tipo_ingreso, bloque_opciones, bloque_registros, parametros_usuarios,
-    parametro_usuario, parametro_password, bloque_param_compo, opcional_usuario;
+    parametro_usuario, parametro_password, bloque_param_compo, opcional_usuario, bloque_registrosPrima;
 
 non terminal String tipo_junto, tipos_de_clases;
 
@@ -209,21 +211,24 @@ grupo_datos::=
 ;
 
 bloque_datos::=
-    | bloque_datos COMA LLAVEA parametros_datos LLAVEC
-    | LLAVEA parametros_datos LLAVEC
+    | bloque_datos COMA LLAVEA parametros_datos LLAVEC                  {:form_temporal.getRegistros().add(reg_temporal); reg_temporal = new Registro();:}
+    | LLAVEA parametros_datos LLAVEC                                    {:form_temporal.getRegistros().add(reg_temporal); reg_temporal = new Registro();:}
 ;
 
 parametros_datos::=
-    COMILLAS NOMBREC COMILLAS DOSP COMILLAS tipo_junto COMILLAS COMA bloque_registros
+    COMILLAS NOMBREC COMILLAS DOSP COMILLAS tipo_junto:e1 COMILLAS COMA COMILLAS IDC COMILLAS DOSP COMILLAS ID:e2 COMILLAS COMA bloque_registros {:reg_temporal.setId(e2.toString()); reg_temporal.setNombre(e1.toString()); reg_temporal.setRegistros(reg); reg = new ArrayList<>();:}
 ;
 
 bloque_registros::=
-    bloque_registros COMA parametro_registro
-    | parametro_registro
+    parametro_registro bloque_registrosPrima 
+;
+
+bloque_registrosPrima::=
+    | COMA bloque_registros
 ;
 
 parametro_registro::=
-    COMILLAS NOREGISTRO COMILLAS DOSP COMILLAS tipo_ingreso COMILLAS
+    COMILLAS NOREGISTRO COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS {: reg.add(e1.toString());:}
 ;
 
 tipo_ingreso::=

@@ -11,7 +11,7 @@ import java_cup.runtime.Symbol;
 %public
 L=[a-zA-Z]+
 D=[0-9]+
-C=[@_"-"%#&]+
+C=[@_"-"%#&:]+
 espacio=[ |\t|\r|\n]+
 esp = [ ]+
 %{
@@ -69,7 +69,7 @@ esp = [ ]+
 ("TEMA") {return new Symbol(symALM.TEMAP,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para tipos de temas*/
-("dark"|"blue"|"white"|"DARK"|"BLUE"|"WHITE") {return new Symbol(symALM.TEMA,yycolumn,yyline,yytext());}
+("dark"|"blue"|"white"|"DARK"|"BLUE"|"WHITE"|"Blue"|"Dark"|"White") {return new Symbol(symALM.TEMA,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para tipos de temas*/
 ("CENTRO"|"IZQUIERDA"|"DERECHA"|"JUSTIFICAR") {return new Symbol(symALM.ALINEA,yycolumn,yyline,yytext());}
@@ -162,7 +162,7 @@ esp = [ ]+
 ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(symALM.URL, yycolumn,yyline,yytext());}
 
 /*TITULO*/
-({L}|{D})({L}|{D}|{C}|{esp})* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
+({L}|{D})(({esp})*({L}|{D}|{C}))* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}

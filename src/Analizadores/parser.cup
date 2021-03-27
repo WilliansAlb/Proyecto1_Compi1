@@ -88,7 +88,7 @@ bloque_solicitudes::=
 ;
 
 solicitud::=
-    INICIOE INICIOS DOSP COMILLAS tipo_solicitud MENORQ FINS FINE {:lista_solicitudes.add(temporal); temporal = new Solicitud();:}
+    INICIOE INICIOS COMILLAS tipo_solicitud MENORQ FINS FINE {:lista_solicitudes.add(temporal); temporal = new Solicitud();:}
 ;
 
 tipo_solicitud::=

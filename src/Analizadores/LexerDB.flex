@@ -265,7 +265,7 @@ CREAR_USUARIO {return new Symbol(sym2.CREARU,yycolumn,yyline,yytext());}
 ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(sym2.URL, yycolumn,yyline,yytext());}
 
 /*TITULO*/
-("'")({L}|{D})({L}|{D}|{C}|{esp})*("'") {return new Symbol(sym2.TITULO, yycolumn, yyline, yytext());}
+({L}|{D})(({esp})*({L}|{D}|{C}))* {return new Symbol(sym2.TITULO, yycolumn, yyline, yytext());}
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}
