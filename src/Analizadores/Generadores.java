@@ -83,7 +83,14 @@ public class Generadores {
         java_cup.Main.main(rutaS);
 
         String dP = URLDecoder.decode(path2, "UTF-8");
-
+        Path rutaLex = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/LexerDB.java");
+        if (Files.exists(rutaLex)) {
+            Files.delete(rutaLex);
+        }
+        Files.move(
+                Paths.get(dP + "/src/Analizadores/LexerDB.java"),
+                Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/LexerDB.java")
+        );
         Path rutaSym = Paths.get(dP + "/src/Analizadores/sym2.java");
         if (Files.exists(rutaSym)) {
             Files.delete(rutaSym);
@@ -143,7 +150,7 @@ public class Generadores {
         java_cup.Main.main(rutaS);
 
         String dP = URLDecoder.decode(path2, "UTF-8");
-
+        
         Path rutaSym = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/sym2.java");
         if (Files.exists(rutaSym)) {
             Files.delete(rutaSym);
@@ -166,12 +173,19 @@ public class Generadores {
         String path2 = System.getProperty("user.dir");
         String decodedPath = URLDecoder.decode(path2, "UTF-8");
         String[] rutaS = {"-parser", "parser", "-symbols", "sym", decodedPath + "/src/Analizadores/parser.cup"};
-        //String[] rutaS2 = {decodedPath + "/src/Analizadores/Lexer.flex"};
-        //jflex.Main.generate(rutaS2);
+        String[] rutaS2 = {decodedPath + "/src/Analizadores/Lexer.flex"};
+        jflex.Main.generate(rutaS2);
         java_cup.Main.main(rutaS);
 
         String dP = URLDecoder.decode(path2, "UTF-8");
-
+        Path rutaLex = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/Lexer.java");
+        if (Files.exists(rutaLex)) {
+            Files.delete(rutaLex);
+        }
+        Files.move(
+                Paths.get(dP + "/src/Analizadores/Lexer.java"),
+                Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/Lexer.java")
+        );
         Path rutaSym = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/sym.java");
         if (Files.exists(rutaSym)) {
             Files.delete(rutaSym);

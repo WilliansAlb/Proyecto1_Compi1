@@ -35,7 +35,7 @@ terminal COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, CREARU, USUARIOP, MODIFI
     COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON;
 
 non terminal inicio, bloque_consultas, descripcion_consulta, campo, nombre_campos, campos, continuacion, condiciones, condicion,
-    tipo_dato, not, compara, dato_S;
+    tipo_dato, not, compara, dato_S, bloque_consultasP, condicionesP, condicion_numerica, camposP, dato_s;
 
 start with inicio;
 
@@ -44,8 +44,11 @@ inicio::=
 ;
 
 bloque_consultas::=
-    bloque_consultas COMA descripcion_consulta
-    | descripcion_consulta
+    descripcion_consulta bloque_consultasP
+;
+
+bloque_consultasP::=
+    | COMA bloque_consultas
 ;
 
 descripcion_consulta::=
@@ -62,8 +65,11 @@ nombre_campos::=
 ;
 
 campos::=
-    campos COMA campo
-    | campo
+    campo camposP
+;
+
+camposP::=
+    | COMA campos
 ;
 
 continuacion::=
@@ -71,13 +77,20 @@ continuacion::=
 ;
 
 condiciones::=
-    condiciones OPERADORLOGICO condicion
-    | condicion
+    condicion condicionesP
+;
+
+condicionesP::=
+    | OPERADORLOGICO condiciones
 ;
 
 condicion::=
     not campo compara
-    | PARENTESISA condiciones PARENTESISC
+;
+
+compara::=
+    condicion_numerica
+    | IGUAL tipo_dato
 ;
 
 tipo_dato::=
@@ -94,10 +107,9 @@ not::=
     | OPERADORNOT
 ;
 
-compara::=
+condicion_numerica::=
     MAYORIGUAL NUMERO
     | MENORIGUAL NUMERO
     | MAYORQ NUMERO
     | MENORQ NUMERO
-    | IGUAL tipo_dato
 ;

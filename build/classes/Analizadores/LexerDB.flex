@@ -12,6 +12,13 @@ import java_cup.runtime.Symbol;
 L=[a-zA-Z]+
 D=[0-9]+
 C=[@_"-"%#&]+
+DARK = [Dd][Aa][Rr][Kk]
+WHITE = [Ww][Hh][Ii][Tt][Ee]
+BLUE = [Bb][Ll][Uu][Ee]
+ini= [Ii][Nn][Ii]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd]
+inis= [Ii][Nn][Ii]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd][Ee][Ss]
+fin= [Ff][Ii][Nn]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd]
+fins= [Ff][Ii][Nn]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd][Ee][Ss]
 espacio=[ |\t|\r|\n]+
 esp = [ ]+
 %{
@@ -24,11 +31,18 @@ esp = [ ]+
 %}
 %%
 
+
+/* Inicio de una solicitud */
+<YYINITIAL> {ini} {return new Symbol(sym2.INICIOS, yycolumn, yyline, yytext());}
+
+/* Fin de una solicitud*/
+<YYINITIAL> {fin} {return new Symbol(sym2.FINS,yycolumn,yyline,yytext());}
+
 /* Inicio de mas de una solicitud */
-( "ini_solicitudes" ) {return new Symbol(sym2.SOLICITUDESP, yycolumn, yyline, yytext());}
+<YYINITIAL> {inis} {return new Symbol(sym2.SOLICITUDESP, yycolumn, yyline, yytext());}
 
 /* Fin de mas de una solicitud */
-( "fin_solicitudes" ) {return new Symbol(sym2.FINSOLICITUDES, yycolumn, yyline, yytext());}
+<YYINITIAL> {fins} {return new Symbol(sym2.FINSOLICITUDES, yycolumn, yyline, yytext());}
 
 /* Inicio de etiqueta*/
 ( "<!" ) {return new Symbol(sym2.INICIOE,yycolumn,yyline,yytext());}
@@ -44,12 +58,6 @@ esp = [ ]+
 
 /* O */
 ( "|" ) {return new Symbol(sym2.OR,yycolumn,yyline,yytext());}
-
-/* Inicio de una solicitud */
-( "ini_solicitud" ) {return new Symbol(sym2.INICIOS, yycolumn, yyline, yytext());}
-
-/* Fin de una solicitud*/
-( "fin_solicitud" ) {return new Symbol(sym2.FINS,yycolumn,yyline,yytext());}
 
 /* Crear usuario */
 CREAR_USUARIO {return new Symbol(sym2.CREARU,yycolumn,yyline,yytext());}
@@ -130,7 +138,7 @@ CREAR_USUARIO {return new Symbol(sym2.CREARU,yycolumn,yyline,yytext());}
 ("USUARIO_CREACION") {return new Symbol(sym2.USUARIOCP,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para tipos de temas*/
-("dark"|"blue"|"white"|"DARK"|"BLUE"|"WHITE") {return new Symbol(sym2.TEMA,yycolumn,yyline,yytext());}
+({BLUE}|{WHITE}|{DARK}) {return new Symbol(sym2.TEMA,yycolumn,yyline,yytext());}
 
 /*Palabra reservada para clases normales*/
 ("CAMPO_TEXTO"|"FICHERO") {return new Symbol(sym2.CLASENORMAL,yycolumn,yyline,yytext());}

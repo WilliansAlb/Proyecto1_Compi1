@@ -29,6 +29,9 @@ esp = [ ]+
 /*inicio para usuarios*/
 ("db.usuarios") {return new Symbol(symALM.INICIOUSUARIOS, yycolumn, yyline, yytext());}
 
+/*inicio para usuarios*/
+("db.datos") {return new Symbol(symALM.INICIOUSUARIOS, yycolumn, yyline, yytext());}
+
 /*lista de componentes*/
 ("COMPONENTES") {return new Symbol(symALM.COMPS, yycolumn, yyline, yytext());}
 

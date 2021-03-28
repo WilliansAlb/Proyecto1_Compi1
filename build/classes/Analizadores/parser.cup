@@ -58,11 +58,12 @@ parser code
 :};
 
 terminal COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, CREARU, USUARIOP, MODIFICARU, USUARIOAP, USUARIONP, NUEVOP,
-    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO, ALINEA, BOOL,
+    CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO, ALINEA, BOOL, DEC,
     Parentesis_a, Parentesis_c, USUARIO, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
     LLAVEA, LLAVEC, CORCHETEA, CORCHETEC, SOLICITUDESP, FINSOLICITUDES, MODIFICARF, PARAMF, AGREGARC, NOMBREC,
     NUMERO, INICIOS, FINS, COMA, ID, URL, FORMULARIOC, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS,
-    COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON;
+    COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON,
+    CONSULTARD,CONSULTASP,NOCONSULTA,SELECT,WHERE, DE,NOT,AND,OROP,IGUAL,MAYORIGUAL,MENORIGUAL,APOSTROFE;
 
 non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solicitud, inicio_param_usuario,
     parametro_usuario, parametros_crear, parametro_contra, parametro_fecha, parametro_login, bloque_usuario2, parametros_modificarU,
@@ -71,7 +72,9 @@ non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solici
     parametro_tema, bloque_formulario2, parametros_formulario2, inicio_param_componente, bloque_componente1, parametros_agregar,
     parametro_nombre_campo, parametro_formulario, parametro_clase, parametro_indice, parametro_texto, parametro_alineacion,
     parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar,
-    bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8;
+    bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8, inicio_param_datos, bloque9, bloque9P, bloque_consultas, bloque_consultasP,
+    descripcion_consulta, campo, nombre_campos, campos, camposP, restricciones, condiciones, condicionesP, operadorlogico, condicion, 
+    opnot, condicion_numerica, tipo_numero, compara, tipo_dato;
 
 non terminal String tipo_palabra, tipo_opcion, tipos_de_clases;
 
@@ -102,6 +105,7 @@ tipo_solicitud::=
     | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC     {:temporal.setTipo("AGREGAR_COMPONENTE");:}
     | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC    {:temporal.setTipo("ELIMINAR_COMPONENTE");:}
     | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC   {:temporal.setTipo("MODIFICAR_COMPONENTE");:}
+    | CONSULTARD inicio_param_datos bloque9 CORCHETEC LLAVEC {:temporal.setTipo("CONSULTAR_DATOS");:}
 ;
 
 bloque1::=
@@ -155,6 +159,7 @@ inicio_param_formulario::=
 inicio_param_componente::=
     COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA 
 ;
+
 
 bloque_eliminar::=
     parametro_id COMA parametro_formulario
@@ -235,8 +240,8 @@ parametro_tema::=
 ;
 
 parametro_login::=
-    parametro_usuario COMA parametro_contra
-    | parametro_contra COMA parametro_usuario
+    parametro_usuario COMA parametro_contra {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | parametro_contra COMA parametro_usuario {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
 ;
 
 parametro_usuario::=
@@ -351,4 +356,95 @@ parametro_columnas::=
 
 parametro_url::=
     COMILLAS URLC COMILLAS DOSP COMILLAS URL:e1 COMILLAS                    {:agregarParametroAMap("URL",e1.toString());:}
+;
+
+
+
+inicio_param_datos::=
+    COMILLAS MAYORQ LLAVEA COMILLAS CONSULTASP COMILLAS DOSP CORCHETEA
+;
+
+bloque9::=
+    LLAVEA bloque_consultas LLAVEC bloque9P
+;
+
+bloque9P::=
+    | COMA bloque9
+;
+
+bloque_consultas::=
+    descripcion_consulta bloque_consultasP
+;
+
+bloque_consultasP::=
+    | COMA bloque_consultas
+;
+
+descripcion_consulta::=
+    COMILLAS NOCONSULTA COMILLAS DOSP COMILLAS SELECT DE campo CORCHETEA nombre_campos CORCHETEC restricciones COMILLAS
+;
+
+campo::=
+    ID
+    | USUARIO
+;
+
+nombre_campos::=
+    | campos
+;
+
+campos::=
+    campo camposP
+;
+
+camposP::=
+    | COMA campos
+;
+
+restricciones::=
+    | WHERE CORCHETEA condiciones CORCHETEC
+;
+
+condiciones::=
+    condicion condicionesP
+;
+
+condicionesP::=
+    | operadorlogico condiciones
+;
+
+operadorlogico::=
+    AND
+    | OROP
+;
+
+condicion::=
+    opnot campo compara
+;
+
+opnot::=
+    | NOT
+;
+
+compara::=
+    condicion_numerica tipo_numero
+    | IGUAL tipo_dato
+;
+
+condicion_numerica::=
+    MAYORIGUAL
+    | MENORIGUAL
+    | MAYORQ
+    | MENORQ
+;
+
+tipo_numero::=
+    NUMERO
+    | DEC
+;
+
+tipo_dato::=
+    NUMERO
+    | APOSTROFE tipo_opcion APOSTROFE
+    | DEC
 ;
