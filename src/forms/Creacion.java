@@ -56,6 +56,7 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.nio.charset.StandardCharsets;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -68,14 +69,12 @@ public class Creacion extends javax.swing.JFrame {
     private JScrollPane jsp;
     private static JTextArea textArea2;
     private static JTextPane textPane;
-    private static JTextArea textArea3;
-    private static JTextArea textArea4;
     private static JTextPane textPane2;
     private static JTextArea lines2;
     private JScrollPane jsp2;
-    private JScrollPane jsp3;
-    private JScrollPane jsp4;
     private String logeado;
+    private ArrayList<Reporte> reportes = new ArrayList<>();
+    private int report_actual = 0;
 
     /**
      * Creates new form Creacion
@@ -83,6 +82,7 @@ public class Creacion extends javax.swing.JFrame {
     public Creacion() {
         initComponents();
         getContentPane().setBackground(Color.BLACK);
+        btn_reportes.setVisible(false);
         logeado = "";
         jsp = new JScrollPane();
         textArea = new JTextArea();
@@ -99,19 +99,6 @@ public class Creacion extends javax.swing.JFrame {
         pan1.add(jsp);
         jtab.setEnabledAt(2, false);
         jtab.setEnabledAt(1, false);
-        jsp3 = new JScrollPane();
-        textArea3 = new JTextArea();
-        TextLineNumber tln3 = new TextLineNumber(textArea3);
-        tln3.setBorderGap(1);
-        tln3.setBackground(Color.BLACK);
-        tln3.setForeground(Color.WHITE);
-        tln3.setCurrentLineForeground(Color.YELLOW);
-        textArea3.setBackground(new Color(97, 97, 97));
-        jsp3.getViewport().add(textArea3);
-        jsp3.setBorder(null);
-        jsp3.setRowHeaderView(tln3);
-        jsp3.setBounds(0, 0, panel3.getWidth(), panel3.getHeight());
-        panel3.add(jsp3);
 
         jsp2 = new JScrollPane();
         textArea2 = new JTextArea();
@@ -130,24 +117,6 @@ public class Creacion extends javax.swing.JFrame {
         jsp2.setBounds(0, 0, pan2.getWidth(), pan2.getHeight());
         pan2.add(jsp2);
         pan2.setBackground(new Color(97, 97, 97));
-
-        jsp4 = new JScrollPane();
-        textArea4 = new JTextArea();
-        textArea4.setBackground(new Color(97, 97, 97));
-        textPane2 = new JTextPane();
-        textPane2.setOpaque(false);
-        textPane2.setBackground(new Color(97, 97, 97));
-        jsp4.getViewport().add(textArea4);
-        TextLineNumber tln4 = new TextLineNumber(textArea4);
-        tln4.setBorderGap(1);
-        tln4.setBackground(Color.BLACK);
-        tln4.setForeground(Color.WHITE);
-        tln4.setCurrentLineForeground(Color.YELLOW);
-        jsp4.setRowHeaderView(tln4);
-        jsp4.setBorder(null);
-        jsp4.setBounds(0, 0, panel4.getWidth(), panel4.getHeight());
-        panel4.add(jsp4);
-        panel4.setBackground(new Color(97, 97, 97));
 
         setLocationRelativeTo(null);
     }
@@ -170,17 +139,22 @@ public class Creacion extends javax.swing.JFrame {
         pan1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         btn_login = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        panel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        panel4 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         pan2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        btn_reportes = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jlabel_consulta = new javax.swing.JLabel();
+        jlabel_id = new javax.swing.JLabel();
+        btn_anterior = new javax.swing.JButton();
+        btn_siguiente = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabla_reporte = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Formularios");
+        setTitle("WForms");
         setBackground(new java.awt.Color(25, 25, 25));
         setMinimumSize(new java.awt.Dimension(620, 510));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -264,13 +238,17 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setBackground(new java.awt.Color(25, 25, 25));
+        jButton2.setForeground(new java.awt.Color(216, 255, 144));
+        jButton2.setText("GUARDAR");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -281,7 +259,8 @@ public class Creacion extends javax.swing.JFrame {
                                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btn_limpiar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btn_cargar, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btn_login, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addComponent(btn_login, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(jlabel_path, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
@@ -301,72 +280,15 @@ public class Creacion extends javax.swing.JFrame {
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addContainerGap(242, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(9, 9, 9))))
         );
 
         jtab.addTab("AREA SOLICITUDES", jPanel1);
-
-        javax.swing.GroupLayout panel3Layout = new javax.swing.GroupLayout(panel3);
-        panel3.setLayout(panel3Layout);
-        panel3Layout.setHorizontalGroup(
-            panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        panel3Layout.setVerticalGroup(
-            panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 186, Short.MAX_VALUE)
-        );
-
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("AREA DE INGRESO DE CONSULTAS");
-
-        javax.swing.GroupLayout panel4Layout = new javax.swing.GroupLayout(panel4);
-        panel4.setLayout(panel4Layout);
-        panel4Layout.setHorizontalGroup(
-            panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        panel4Layout.setVerticalGroup(
-            panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 206, Short.MAX_VALUE)
-        );
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("AREA DE RESPUESTA");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                    .addComponent(panel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jtab.addTab("AREA CONSULTAS", jPanel2);
 
         jPanel3.setBackground(new java.awt.Color(25, 25, 25));
 
@@ -378,13 +300,15 @@ public class Creacion extends javax.swing.JFrame {
         );
         pan2Layout.setVerticalGroup(
             pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 434, Short.MAX_VALUE)
+            .addGap(0, 433, Short.MAX_VALUE)
         );
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(216, 255, 144));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("RESPUESTA DEL SERVIDOR");
+
+        btn_reportes.setText("VER REPORTES (0)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -393,6 +317,7 @@ public class Creacion extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_reportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
                 .addContainerGap())
@@ -402,11 +327,92 @@ public class Creacion extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_reportes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jtab.addTab("AREA RESPUESTA", jPanel3);
+
+        jPanel2.setBackground(new java.awt.Color(25, 25, 25));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(216, 255, 144));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("AREA DE DESPLIEGUE DE REPORTES");
+
+        jlabel_consulta.setForeground(new java.awt.Color(216, 255, 144));
+        jlabel_consulta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlabel_consulta.setText("ACÁ APARECERA EL NOMBRE DE LA CONSULTA");
+
+        jlabel_id.setForeground(new java.awt.Color(216, 255, 144));
+        jlabel_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlabel_id.setText("ACÁ APARECERA EL ID DE LA CONSULTA");
+
+        btn_anterior.setText("A");
+        btn_anterior.setEnabled(false);
+
+        btn_siguiente.setText("S");
+        btn_siguiente.setEnabled(false);
+        btn_siguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_siguienteActionPerformed(evt);
+            }
+        });
+
+        tabla_reporte.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(tabla_reporte);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                    .addComponent(jlabel_consulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlabel_id, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btn_anterior)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_siguiente)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jlabel_id)
+                .addGap(12, 12, 12)
+                .addComponent(jlabel_consulta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_anterior)
+                            .addComponent(btn_siguiente))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jtab.addTab("AREA REPORTES", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -416,7 +422,7 @@ public class Creacion extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jtab, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+            .addComponent(jtab)
         );
 
         pack();
@@ -480,12 +486,47 @@ public class Creacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
-        setLogeado("");
-        btn_login.setText("<html><font color=red>SIN</font><br><font color =red>LOGIN</font></html>");
-        btn_login.setEnabled(false);
-        btn_login.setContentAreaFilled(false);
-        btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\offrz.png"));
+        String[] options = {"SI", "NO"};
+        int x = JOptionPane.showOptionDialog(null, "¿Estás seguro de cerrar sesión?",
+                "CERRAR SESION",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\arrow.png"), options, options[0]);
+        if (x == 0) {
+            setLogeado("");
+            btn_login.setText("<html><font color=red>SIN</font><br><font color =red>LOGIN</font></html>");
+            btn_login.setEnabled(false);
+            btn_login.setContentAreaFilled(false);
+            btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\offrz.png"));
+        }
     }//GEN-LAST:event_btn_loginActionPerformed
+
+    private void btn_siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_siguienteActionPerformed
+        if ((report_actual + 1) != (reportes.size())) {
+            report_actual++;
+
+        } else {
+            report_actual = 0;
+        }
+        System.out.println(reportes.size());
+        Object[] objArray = reportes.get(report_actual).getColumnas().toArray();
+        ArrayList<String> d = reportes.get(report_actual).getDatos();
+        jlabel_id.setText(reportes.get(report_actual).getId_consulta());
+        jlabel_consulta.setText(reportes.get(report_actual).getConsulta());
+        DefaultTableModel dtm = new DefaultTableModel(objArray, 0);
+        ArrayList<String> escribiendo = new ArrayList<>();
+        int conteo = 0;
+        for (int i = 0; i < d.size(); i++) {
+            if (conteo == (objArray.length - 1)) {
+                escribiendo.add(d.get(i));
+                dtm.addRow(escribiendo.toArray());
+                escribiendo = new ArrayList<>();
+                conteo = 0;
+            } else {
+                escribiendo.add(d.get(i));
+                conteo++;
+            }
+        }
+        tabla_reporte.setModel(dtm);
+    }//GEN-LAST:event_btn_siguienteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -530,7 +571,7 @@ public class Creacion extends javax.swing.JFrame {
             String texto = textArea.getText();
             //posicionar(10,18);
             params.add(new BasicNameValuePair("entrada", texto));
-            params.add(new BasicNameValuePair("usuario", getLogeado()));
+            params.add(new BasicNameValuePair("usuario", "ozymandias"));
             httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
             try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
@@ -541,7 +582,57 @@ public class Creacion extends javax.swing.JFrame {
                 Map<String, String> map = gson.fromJson(respuesta, Map.class);
                 if (!map.containsKey("ERROR")) {
                     textArea2.setText(map.get("respuesta"));
-                    jtab.setSelectedIndex(2);
+                    if (map.containsKey("reportes")) {
+                        reportes = new ArrayList<>();
+                        String[] partes_consulta = map.get("reportes").split("\t");
+                        for (String part : partes_consulta) {
+                            String[] parti = part.split("\n");
+                            Reporte nuevo = new Reporte();
+                            nuevo.setId_consulta(parti[0]);
+                            nuevo.setConsulta(parti[1]);
+                            System.out.println(nuevo.getConsulta());
+                            System.out.println(parti[2]);
+                            String[] cols = parti[2].split("<///>");
+                            for (String col : cols) {
+                                nuevo.getColumnas().add(col);
+                            }
+                            nuevo.setNoColumnas(nuevo.getColumnas().size());
+                            String[] dat = parti[3].split("<///>");
+                            for (String col : dat) {
+                                nuevo.getDatos().add(col);
+                                System.out.println(col);
+                            }
+                            reportes.add(nuevo);
+                        }
+                        if (!reportes.isEmpty()) {
+                            Object[] objArray = reportes.get(0).getColumnas().toArray();
+                            ArrayList<String> d = reportes.get(0).getDatos();
+                            jlabel_id.setText(reportes.get(0).getId_consulta());
+                            jlabel_consulta.setText(reportes.get(0).getConsulta());
+                            DefaultTableModel dtm = new DefaultTableModel(objArray, 0);
+                            ArrayList<String> escribiendo = new ArrayList<>();
+                            int conteo = 0;
+                            for (int i = 0; i < d.size(); i++) {
+                                if (conteo == (objArray.length - 1)) {
+                                    escribiendo.add(d.get(i));
+                                    dtm.addRow(escribiendo.toArray());
+                                    escribiendo = new ArrayList<>();
+                                    conteo = 0;
+                                } else {
+                                    escribiendo.add(d.get(i));
+                                    conteo++;
+                                }
+                            }
+                            tabla_reporte.setModel(dtm);
+                            report_actual = 0;
+                            if (reportes.size() > 1) {
+                                btn_siguiente.setEnabled(true);
+                            }
+                        }
+                        btn_reportes.setVisible(true);
+                        btn_reportes.setText("VER REPORTES (" + reportes.size() + ")");
+                    }
+                    jtab.setSelectedIndex(1);
                     jtab.setEnabledAt(1, true);
                     jtab.setEnabledAt(2, true);
                     setLogeado(map.get("usuario"));
@@ -568,10 +659,10 @@ public class Creacion extends javax.swing.JFrame {
             cuantos[i] = lineas1[i].length();
         }
         int donde = 0;
-        for (int i = 0; i < (linea-1); i++) {
-            donde += cuantos[i]+1;
+        for (int i = 0; i < (linea - 1); i++) {
+            donde += cuantos[i] + 1;
         }
-        donde += (columna-1);
+        donde += (columna - 1);
         textArea.setCaretPosition(donde);
     }
 
@@ -584,22 +675,27 @@ public class Creacion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_anterior;
     private javax.swing.JButton btn_cargar;
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_login;
+    private javax.swing.JButton btn_reportes;
+    private javax.swing.JButton btn_siguiente;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jlabel_consulta;
+    private javax.swing.JLabel jlabel_id;
     private javax.swing.JLabel jlabel_path;
     private javax.swing.JTabbedPane jtab;
     private javax.swing.JPanel pan1;
     private javax.swing.JPanel pan2;
-    private javax.swing.JPanel panel3;
-    private javax.swing.JPanel panel4;
+    private javax.swing.JTable tabla_reporte;
     // End of variables declaration//GEN-END:variables
 }

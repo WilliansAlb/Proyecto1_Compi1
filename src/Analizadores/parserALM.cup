@@ -12,13 +12,14 @@ parser code
     
     public ArrayList<Usuario> listado_usuarios = new ArrayList<>();
     public ArrayList<Formulario> listado_formularios = new ArrayList<>();
+    public ArrayList<Formulario> listado_datos = new ArrayList<>();
     public ArrayList<Componente> listado_componentes = new ArrayList<>();
-    public ArrayList<String> reg = new ArrayList<>();
 
     public Usuario usuario_temporal = new Usuario();
     public Formulario form_temporal = new Formulario();
+    public Formulario form_dato = new Formulario();
+    public Registro reg_dato = new Registro();
     public Componente comp_temporal = new Componente();
-    public Registro reg_temporal = new Registro();
 
     public Symbol getS(){
         return this.sym;
@@ -44,21 +45,25 @@ parser code
 
 terminal COMILLAS, DOSP, FECHACP, TITULO, ALINEA, BOOL, OR, PARENTESISA, PARENTESISC, USUARIO, FECHA, IDF, IDC, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA,
     LLAVEA, LLAVEC, NOMBREC, NUMERO, COMA, ID, URL, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS, USUARIOP, CONTRAP, FECHAMP,
-    COLUMNAS, URLC, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON, INICIOFORM, INICIOUSUARIOS, COMPS, DATOS, NOREGISTRO;
+    COLUMNAS, URLC, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON, INICIOFORM, INICIOUSUARIOS, COMPS, NOREGISTRO,
+    INICIODATOS, VALOR, REGISTROS;
 
 non terminal inicio, bloque_forms, bloque_usuarios, parametros_form, parametro_id, parametro_titulo, parametro_nombre, parametro_tema, parametro_user_creacion, parametro_fecha_creacion,
-    grupo_componentes, grupo_datos, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
+    grupo_componentes, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
     parametro_texto, parametro_alineacion, parametro_opciones, parametro_requerido, parametro_filas, parametro_columnas, parametro_url,
-    bloque_datos, parametros_datos, parametro_registro, tipo_ingreso, bloque_opciones, bloque_registros, parametros_usuarios,
-    parametro_usuario, parametro_password, bloque_param_compo, opcional_usuario, bloque_registrosPrima;
+    tipo_ingreso, bloque_opciones, parametros_usuarios,
+    parametro_usuario, parametro_password, bloque_param_compo, opcional_usuario, bloque_datos, bloque_datosP, lista_forms, bloque_registros, 
+    bloque_registrosP, registro, bloque_valores, bloque_valoresP, bloque_dat;
 
 non terminal String tipo_junto, tipos_de_clases;
+non terminal Ingreso ingresado;
 
 start with inicio;
 
 inicio::=
     INICIOFORM PARENTESISA bloque_forms PARENTESISC
     | INICIOUSUARIOS PARENTESISA bloque_usuarios PARENTESISC
+    | INICIODATOS PARENTESISA bloque_dat PARENTESISC
 ;
 
 bloque_forms::=
@@ -88,7 +93,7 @@ parametro_password::=
 ;
 
 parametros_form::=
-    parametro_id COMA parametro_titulo COMA parametro_nombre COMA parametro_tema COMA parametro_user_creacion COMA parametro_fecha_creacion COMA grupo_componentes COMA grupo_datos
+    parametro_id COMA parametro_titulo COMA parametro_nombre COMA parametro_tema COMA parametro_user_creacion COMA parametro_fecha_creacion COMA grupo_componentes
 ;
 
 parametro_id::=
@@ -206,35 +211,49 @@ parametro_url::=
     COMILLAS URLC COMILLAS DOSP COMILLAS URL:e1 COMILLAS                {:comp_temporal.setUrl(e1.toString());:}
 ;
 
-grupo_datos::=
-    COMILLAS DATOS COMILLAS DOSP PARENTESISA bloque_datos PARENTESISC
-;
-
-bloque_datos::=
-    | bloque_datos COMA LLAVEA parametros_datos LLAVEC                  {:form_temporal.getRegistros().add(reg_temporal); reg_temporal = new Registro();:}
-    | LLAVEA parametros_datos LLAVEC                                    {:form_temporal.getRegistros().add(reg_temporal); reg_temporal = new Registro();:}
-;
-
-parametros_datos::=
-    COMILLAS NOMBREC COMILLAS DOSP COMILLAS tipo_junto:e1 COMILLAS COMA COMILLAS IDC COMILLAS DOSP COMILLAS ID:e2 COMILLAS COMA bloque_registros {:reg_temporal.setId(e2.toString()); reg_temporal.setNombre(e1.toString()); reg_temporal.setRegistros(reg); reg = new ArrayList<>();:}
-;
-
-bloque_registros::=
-    parametro_registro bloque_registrosPrima 
-;
-
-bloque_registrosPrima::=
-    | COMA bloque_registros
-;
-
-parametro_registro::=
-    COMILLAS NOREGISTRO COMILLAS DOSP COMILLAS tipo_ingreso:e1 COMILLAS {: reg.add(e1.toString());:}
-;
-
 tipo_ingreso::=
     ID:e1 {:RESULT = e1.toString();:}
     | USUARIO:e1 {:RESULT = e1.toString();:}
     | TITULO:e1 {:RESULT = e1.toString();:}
     | FECHA:e1 {:RESULT = e1.toString();:}
     | NUMERO:e1 {:RESULT = e1.toString();:}
+;
+
+bloque_dat::=
+    | bloque_datos
+;
+
+bloque_datos::=
+    LLAVEA lista_forms LLAVEC bloque_datosP
+;
+
+bloque_datosP::=
+    | COMA bloque_datos
+;
+
+lista_forms::=
+    COMILLAS IDF COMILLAS DOSP COMILLAS ID:e1 COMILLAS COMA COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e2 COMILLAS COMA COMILLAS REGISTROS COMILLAS DOSP PARENTESISA bloque_registros PARENTESISC {: form_dato.setId(e1.toString()); form_dato.setNombre(e2.toString()); listado_datos.add(form_dato); form_dato = new Formulario();:}
+;
+bloque_registros::=
+    LLAVEA registro LLAVEC bloque_registrosP
+;
+
+bloque_registrosP::=
+    | COMA bloque_registros
+;
+
+registro::=
+    COMILLAS NOREGISTRO:e1 COMILLAS DOSP PARENTESISA bloque_valores PARENTESISC {: reg_dato.setNoregistro(e1.toString()); form_dato.getRegistros().add(reg_dato); reg_dato = new Registro(); :}
+;
+
+bloque_valores::=
+    LLAVEA ingresado:e1 LLAVEC bloque_valoresP {: reg_dato.getValores().add(e1);:}
+;
+
+bloque_valoresP::=
+    | COMA bloque_valores
+;
+
+ingresado::=
+    COMILLAS IDC COMILLAS DOSP COMILLAS ID:id1 COMILLAS COMA COMILLAS NOMBREC COMILLAS DOSP COMILLAS USUARIO:nombre1 COMILLAS COMA COMILLAS VALOR COMILLAS DOSP COMILLAS tipo_ingreso:in1 COMILLAS {: Ingreso nuevo = new Ingreso(); nuevo.setIdc(id1.toString()); nuevo.setNombrec(nombre1.toString()); nuevo.setDato(in1.toString()); RESULT = nuevo; :}
 ;

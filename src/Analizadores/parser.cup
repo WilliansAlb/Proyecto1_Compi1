@@ -3,6 +3,7 @@ package Analizadores;
 import java_cup.runtime.Symbol;
 import POJOS.Solicitud;
 import POJOS.Usuario;
+import POJOS.Consulta;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -13,9 +14,12 @@ parser code
     
     public Solicitud temporal = new Solicitud();
     public Map<String,String> lista_temporal = new HashMap<>();
+    public Map<String,String> res_temp = new HashMap<>();
+    public ArrayList<Consulta> lista_consultas = new ArrayList<>();
     public ArrayList<Solicitud> lista_solicitudes = new ArrayList<>();
     public Usuario logeado = new Usuario();
     public Usuario retorno = new Usuario();
+    public Consulta cons_temp = new Consulta();
     public String armando = "";
 
     public Symbol getS(){
@@ -39,6 +43,10 @@ parser code
         }
     }
 
+    public void imp(String texto){
+        System.out.println(texto);
+    }
+
     public void report_fatal_error(String message, Object info) {
         System.out.println("reportfatal "+message+info);
     }
@@ -59,7 +67,7 @@ parser code
 
 terminal COMILLAS, INICIOE, DOSP, FINE, MAYORQ, MENORQ, CREARU, USUARIOP, MODIFICARU, USUARIOAP, USUARIONP, NUEVOP,
     CONTRAP, FECHACP, FECHAMP, ELIMINARU, LOGINU, NUEVOFP, TITULO, ALINEA, BOOL, DEC,
-    Parentesis_a, Parentesis_c, USUARIO, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
+    PARENTESISA, PARENTESISC, USUARIO, FECHA, IDP, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA, ELIMINARF,
     LLAVEA, LLAVEC, CORCHETEA, CORCHETEC, SOLICITUDESP, FINSOLICITUDES, MODIFICARF, PARAMF, AGREGARC, NOMBREC,
     NUMERO, INICIOS, FINS, COMA, ID, URL, FORMULARIOC, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS,
     COLUMNAS, URLC, ELIMINARC, PARAMC, MODIFICARC, CREDENCIALES, OR, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON,
@@ -73,10 +81,15 @@ non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solici
     parametro_nombre_campo, parametro_formulario, parametro_clase, parametro_indice, parametro_texto, parametro_alineacion,
     parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar,
     bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8, inicio_param_datos, bloque9, bloque9P, bloque_consultas, bloque_consultasP,
-    descripcion_consulta, campo, nombre_campos, campos, camposP, restricciones, condiciones, condicionesP, operadorlogico, condicion, 
-    opnot, condicion_numerica, tipo_numero, compara, tipo_dato;
+    descripcion_consulta, nombre_campos, campos, camposP, restricciones, condiciones, condicionesP, operadorlogico, condicion;
 
-non terminal String tipo_palabra, tipo_opcion, tipos_de_clases;
+non terminal String tipo_palabra, tipo_opcion, condicion_numerica, tipos_de_clases, campo;
+non terminal Map<String,String> tipo_condicion, condicional, tipo_numero, tipo_dato;
+non terminal ArrayList<Map<String,String>>  restriccion;
+
+precedence left OROP;
+precedence left AND;
+precedence left NOT;
 
 start with inicio;
 
@@ -105,7 +118,7 @@ tipo_solicitud::=
     | AGREGARC inicio_param_componente bloque7 CORCHETEC LLAVEC     {:temporal.setTipo("AGREGAR_COMPONENTE");:}
     | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC    {:temporal.setTipo("ELIMINAR_COMPONENTE");:}
     | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC   {:temporal.setTipo("MODIFICAR_COMPONENTE");:}
-    | CONSULTARD inicio_param_datos bloque9 CORCHETEC LLAVEC {:temporal.setTipo("CONSULTAR_DATOS");:}
+    | CONSULTARD inicio_param_datos bloque9 CORCHETEC LLAVEC        {:temporal.setTipo("CONSULTAR_DATOS");:}
 ;
 
 bloque1::=
@@ -381,12 +394,12 @@ bloque_consultasP::=
 ;
 
 descripcion_consulta::=
-    COMILLAS NOCONSULTA COMILLAS DOSP COMILLAS SELECT DE campo CORCHETEA nombre_campos CORCHETEC restricciones COMILLAS
+    COMILLAS NOCONSULTA:e1 COMILLAS DOSP COMILLAS SELECT DE campo:e2 CORCHETEA nombre_campos CORCHETEC restricciones COMILLAS {: cons_temp.setNoconsulta(e1.toString()); cons_temp.setForm(e2.toString()); lista_consultas.add(cons_temp); temporal.getConsulta().add(cons_temp); cons_temp = new Consulta(); :}
 ;
 
 campo::=
-    ID
-    | USUARIO
+    ID:e1           {:RESULT = e1.toString();:}
+    | USUARIO:e1       {:RESULT = e1.toString();:}
 ;
 
 nombre_campos::=
@@ -394,7 +407,7 @@ nombre_campos::=
 ;
 
 campos::=
-    campo camposP
+    campo:e1 camposP {: cons_temp.getCampos().add(e1.toString()); :}
 ;
 
 camposP::=
@@ -402,49 +415,41 @@ camposP::=
 ;
 
 restricciones::=
-    | WHERE CORCHETEA condiciones CORCHETEC
+    | WHERE CORCHETEA restriccion:e1 CORCHETEC   {: cons_temp.setRestricciones(e1); :}
 ;
 
-condiciones::=
-    condicion condicionesP
+restriccion::=
+    restriccion:e1 AND restriccion:e2 {: ArrayList<Map<String,String>> para = new ArrayList<>(e1); Map<String,String> te = new HashMap<>(); te.put("OPLOGICO","AND"); para.add(te); para.addAll(e2); RESULT = para; :}
+    | restriccion:e1 OROP restriccion:e2 {: ArrayList<Map<String,String>> para = new ArrayList<>(e1); Map<String,String> te = new HashMap<>(); te.put("OPLOGICO","OR"); para.add(te); para.addAll(e2); RESULT = para; :}
+    | NOT restriccion:e1  {: ArrayList<Map<String,String>> para = e1; para.get(para.size()-1).put("NOT","true"); RESULT = para;:}
+    %prec NOT
+    | PARENTESISA restriccion PARENTESISC {: imp("condicional con parentesis"); :}
+    | condicional:e2      {: ArrayList<Map<String,String>> para = new ArrayList<>(); para.add(e2); RESULT = para; :}
 ;
 
-condicionesP::=
-    | operadorlogico condiciones
+condicional::=
+    campo:e1 tipo_condicion:e2             {: Map<String,String> para = e2; para.put("CAMPO",e1.toString());  RESULT = para;  :}
 ;
 
-operadorlogico::=
-    AND
-    | OROP
-;
-
-condicion::=
-    opnot campo compara
-;
-
-opnot::=
-    | NOT
-;
-
-compara::=
-    condicion_numerica tipo_numero
-    | IGUAL tipo_dato
+tipo_condicion::=
+    condicion_numerica:e1 tipo_numero:e2    {: Map<String,String> para = e2; para.put("OPRELACIONAL",e1.toString());  RESULT = para;  :}
+    | IGUAL:e1 tipo_dato:e2                 {: Map<String,String> para = e2; para.put("OPRELACIONAL",e1.toString());  RESULT = para;  :}
 ;
 
 condicion_numerica::=
-    MAYORIGUAL
-    | MENORIGUAL
-    | MAYORQ
-    | MENORQ
+    MAYORIGUAL:e1                           {: RESULT = e1.toString(); :}
+    | MENORIGUAL:e1                         {: RESULT = e1.toString(); :}
+    | MAYORQ:e1                             {: RESULT = e1.toString(); :}
+    | MENORQ:e1                             {: RESULT = e1.toString(); :}
 ;
 
 tipo_numero::=
-    NUMERO
-    | DEC
+    NUMERO:e1               {: Map<String,String> para = new HashMap<>(); para.put("TIPO","NUMERO"); para.put("DATO",e1.toString()); RESULT = para;  :}
+    | DEC:e1                {: Map<String,String> para = new HashMap<>(); para.put("TIPO","DECIMAL"); para.put("DATO",e1.toString()); RESULT = para;  :}
 ;
 
 tipo_dato::=
-    NUMERO
-    | APOSTROFE tipo_opcion APOSTROFE
-    | DEC
+    NUMERO:e1                               {: Map<String,String> para = new HashMap<>(); para.put("TIPO","NUMERO"); para.put("DATO",e1.toString()); RESULT = para; :}
+    | APOSTROFE tipo_opcion:e1 APOSTROFE    {: Map<String,String> para = new HashMap<>(); para.put("TIPO","STRING"); para.put("DATO",e1.toString()); RESULT = para;  :}
+    | DEC:e1                                {: Map<String,String> para = new HashMap<>(); para.put("TIPO","DECIMAL"); para.put("DATO",e1.toString()); RESULT = para;  :}
 ;

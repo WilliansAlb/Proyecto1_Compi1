@@ -4,14 +4,17 @@ import java_cup.runtime.Symbol;
 %class LexerALM
 %type java_cup.runtime.Symbol
 %cup
-%full
+%unicode
 %line
 %column
 %char
 %public
 L=[a-zA-Z]+
+L2 = [a-zA-ZÀ-ÿ\u00f1\u00d1]+
 D=[0-9]+
+fecha = [12][09][0-9][0-9]"-"([0][1-9]|[1][0-2])"-"([0][1-9]|[1-2][0-9]|[3][01])
 C=[@_"-"%#&:]+
+C2=[@_%#&:]+
 espacio=[ |\t|\r|\n]+
 esp = [ ]+
 %{
@@ -30,13 +33,10 @@ esp = [ ]+
 ("db.usuarios") {return new Symbol(symALM.INICIOUSUARIOS, yycolumn, yyline, yytext());}
 
 /*inicio para usuarios*/
-("db.datos") {return new Symbol(symALM.INICIOUSUARIOS, yycolumn, yyline, yytext());}
+("db.datos") {return new Symbol(symALM.INICIODATOS, yycolumn, yyline, yytext());}
 
 /*lista de componentes*/
 ("COMPONENTES") {return new Symbol(symALM.COMPS, yycolumn, yyline, yytext());}
-
-/*conjunto de datos recopilados*/
-("DATOS") {return new Symbol(symALM.DATOS, yycolumn, yyline, yytext());}
 
 /*Palabra reservada para creacion de usuario*/
 ("USUARIO_CREACION") {return new Symbol(symALM.USUARIOCP,yycolumn,yyline,yytext());}
@@ -146,14 +146,15 @@ esp = [ ]+
 /* Comillas */
 ( "\"" ) {return new Symbol(symALM.COMILLAS, yycolumn, yyline, yytext());}
 
-/* Nombre y numero del campo */
+"VALOR" {return new Symbol(symALM.VALOR, yycolumn, yyline, yytext());}
+"REGISTROS" {return new Symbol(symALM.REGISTROS, yycolumn, yyline, yytext());}
 ("REGISTRO_"{D}+) {return new Symbol(symALM.NOREGISTRO, yycolumn, yyline, yytext());}
 
 /* Numero */
 {D}+|{D}+"."{D}+ {return new Symbol(symALM.NUMERO, yycolumn, yyline, yytext());}
 
 /*Fecha*/
-{D}{4}"-"({D}{2}"-"|{D}"-")({D}{2}|{D}) {return new Symbol(symALM.FECHA,yycolumn,yyline,yytext());}
+{fecha} {return new Symbol(symALM.FECHA,yycolumn,yyline,yytext());}
 
 /*Usuario token*/
 ({L}|{D}|{C})+ {return new Symbol(symALM.USUARIO,yycolumn,yyline,yytext());}
@@ -165,7 +166,7 @@ esp = [ ]+
 ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(symALM.URL, yycolumn,yyline,yytext());}
 
 /*TITULO*/
-({L}|{D})(({esp})*({L}|{D}|{C}))* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
+({L}|{D})(({esp}|"-")*({L}|{D}|{C2}|{L2}))* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}

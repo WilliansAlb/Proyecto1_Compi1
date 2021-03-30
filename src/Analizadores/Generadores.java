@@ -118,7 +118,14 @@ public class Generadores {
         java_cup.Main.main(rutaS);
 
         String dP = URLDecoder.decode(path2, "UTF-8");
-
+        Path rutaLex = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/LexerALM.java");
+        if (Files.exists(rutaLex)) {
+            Files.delete(rutaLex);
+        }
+        Files.move(
+                Paths.get(dP + "/src/Analizadores/LexerALM.java"),
+                Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/LexerALM.java")
+        );
         Path rutaSym = Paths.get("C:/Users/willi/OneDrive/Documentos/NetBeansProjects/WForms/src/java/Analizadores/symALM.java");
         if (Files.exists(rutaSym)) {
             Files.delete(rutaSym);
