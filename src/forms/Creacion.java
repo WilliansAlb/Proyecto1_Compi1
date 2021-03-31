@@ -54,6 +54,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.table.DefaultTableModel;
@@ -68,13 +69,17 @@ public class Creacion extends javax.swing.JFrame {
     private static JTextArea lines;
     private JScrollPane jsp;
     private static JTextArea textArea2;
+    private static JTextArea textArea5;
     private static JTextPane textPane;
     private static JTextPane textPane2;
     private static JTextArea lines2;
     private JScrollPane jsp2;
+    private JScrollPane jsp5;
     private String logeado;
     private ArrayList<Reporte> reportes = new ArrayList<>();
+    private ArrayList<Errores> list_errores = new ArrayList<>();
     private int report_actual = 0;
+    private int error_actual = 0;
 
     /**
      * Creates new form Creacion
@@ -103,6 +108,7 @@ public class Creacion extends javax.swing.JFrame {
         jsp2 = new JScrollPane();
         textArea2 = new JTextArea();
         textArea2.setBackground(new Color(97, 97, 97));
+        textArea2.setEditable(false);
         textPane = new JTextPane();
         textPane.setOpaque(false);
         textPane.setBackground(new Color(97, 97, 97));
@@ -117,6 +123,22 @@ public class Creacion extends javax.swing.JFrame {
         jsp2.setBounds(0, 0, pan2.getWidth(), pan2.getHeight());
         pan2.add(jsp2);
         pan2.setBackground(new Color(97, 97, 97));
+
+        jsp5 = new JScrollPane();
+        textArea5 = new JTextArea();
+        textArea5.setBackground(new Color(97, 97, 97));
+        textArea5.setEditable(false);
+        jsp5.getViewport().add(textArea5);
+        TextLineNumber tln5 = new TextLineNumber(textArea5);
+        tln5.setBorderGap(1);
+        tln5.setBackground(Color.BLACK);
+        tln5.setForeground(Color.WHITE);
+        tln5.setCurrentLineForeground(Color.YELLOW);
+        jsp5.setRowHeaderView(tln5);
+        jsp5.setBorder(null);
+        jsp5.setBounds(0, 0, panel5.getWidth(), panel5.getHeight());
+        panel5.add(jsp5);
+        panel5.setBackground(new Color(97, 97, 97));
 
         setLocationRelativeTo(null);
     }
@@ -145,13 +167,21 @@ public class Creacion extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         btn_reportes = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jlabel_consulta = new javax.swing.JLabel();
+        actual_consulta = new javax.swing.JLabel();
         jlabel_id = new javax.swing.JLabel();
         btn_anterior = new javax.swing.JButton();
         btn_siguiente = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla_reporte = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jlabel_consulta = new javax.swing.JTextArea();
+        jPanel4 = new javax.swing.JPanel();
+        jlabel_error = new javax.swing.JLabel();
+        btn_last = new javax.swing.JButton();
+        btn_next = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tabla_errores = new javax.swing.JTable();
+        panel5 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WForms");
@@ -241,6 +271,11 @@ public class Creacion extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(25, 25, 25));
         jButton2.setForeground(new java.awt.Color(216, 255, 144));
         jButton2.setText("GUARDAR");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -248,7 +283,7 @@ public class Creacion extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,6 +344,11 @@ public class Creacion extends javax.swing.JFrame {
         jLabel4.setText("RESPUESTA DEL SERVIDOR");
 
         btn_reportes.setText("VER REPORTES (0)");
+        btn_reportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reportesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -319,7 +359,7 @@ public class Creacion extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_reportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -337,23 +377,24 @@ public class Creacion extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(25, 25, 25));
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(216, 255, 144));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("AREA DE DESPLIEGUE DE REPORTES");
-
-        jlabel_consulta.setForeground(new java.awt.Color(216, 255, 144));
-        jlabel_consulta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlabel_consulta.setText("ACÁ APARECERA EL NOMBRE DE LA CONSULTA");
+        actual_consulta.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        actual_consulta.setForeground(new java.awt.Color(216, 255, 144));
+        actual_consulta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        actual_consulta.setText("AREA DE DESPLIEGUE DE REPORTES");
 
         jlabel_id.setForeground(new java.awt.Color(216, 255, 144));
         jlabel_id.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlabel_id.setText("ACÁ APARECERA EL ID DE LA CONSULTA");
 
-        btn_anterior.setText("A");
+        btn_anterior.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/left.png"))); // NOI18N
         btn_anterior.setEnabled(false);
+        btn_anterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_anteriorActionPerformed(evt);
+            }
+        });
 
-        btn_siguiente.setText("S");
+        btn_siguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/right.png"))); // NOI18N
         btn_siguiente.setEnabled(false);
         btn_siguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -374,20 +415,27 @@ public class Creacion extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tabla_reporte);
 
+        jlabel_consulta.setEditable(false);
+        jlabel_consulta.setBackground(new java.awt.Color(25, 25, 25));
+        jlabel_consulta.setColumns(20);
+        jlabel_consulta.setForeground(new java.awt.Color(216, 255, 144));
+        jlabel_consulta.setRows(5);
+        jScrollPane2.setViewportView(jlabel_consulta);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                    .addComponent(jlabel_consulta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlabel_id, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(actual_consulta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+                    .addComponent(jlabel_id, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(btn_anterior)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1)
+                        .addComponent(jScrollPane2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_siguiente)))
                 .addContainerGap())
@@ -396,23 +444,119 @@ public class Creacion extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(actual_consulta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlabel_id)
-                .addGap(12, 12, 12)
-                .addComponent(jlabel_consulta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_anterior)
-                            .addComponent(btn_siguiente))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(btn_anterior, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                    .addComponent(btn_siguiente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE))
         );
 
         jtab.addTab("AREA REPORTES", jPanel2);
+
+        jPanel4.setBackground(new java.awt.Color(25, 25, 25));
+
+        jlabel_error.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jlabel_error.setForeground(new java.awt.Color(216, 255, 144));
+        jlabel_error.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlabel_error.setText("ERROR");
+
+        btn_last.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/left.png"))); // NOI18N
+        btn_last.setEnabled(false);
+        btn_last.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_lastActionPerformed(evt);
+            }
+        });
+
+        btn_next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/right.png"))); // NOI18N
+        btn_next.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_nextActionPerformed(evt);
+            }
+        });
+
+        tabla_errores.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Valor", "Nombre", "Esperados", "Tipo", "Fila", "Columna"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tabla_errores);
+        if (tabla_errores.getColumnModel().getColumnCount() > 0) {
+            tabla_errores.getColumnModel().getColumn(0).setResizable(false);
+            tabla_errores.getColumnModel().getColumn(1).setResizable(false);
+            tabla_errores.getColumnModel().getColumn(2).setResizable(false);
+            tabla_errores.getColumnModel().getColumn(3).setResizable(false);
+            tabla_errores.getColumnModel().getColumn(4).setResizable(false);
+            tabla_errores.getColumnModel().getColumn(5).setResizable(false);
+        }
+
+        javax.swing.GroupLayout panel5Layout = new javax.swing.GroupLayout(panel5);
+        panel5.setLayout(panel5Layout);
+        panel5Layout.setHorizontalGroup(
+            panel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panel5Layout.setVerticalGroup(
+            panel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 405, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlabel_error, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btn_last)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_next)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlabel_error)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_last, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_next, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jtab.addTab("VISUALIZAR ERRORES", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -469,12 +613,16 @@ public class Creacion extends javax.swing.JFrame {
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         jsp.setBounds(0, 0, pan1.getWidth(), pan1.getHeight());
         jsp2.setBounds(0, 0, pan2.getWidth(), pan2.getHeight());
+        jsp5.setBounds(0, 0, panel5.getWidth(), panel5.getHeight());
         String txt1 = textArea.getText();
         String txt2 = textArea2.getText();
+        String txt5 = textArea5.getText();
         textArea.setEditable(false);
-        textArea2.setEditable(false);
-        textArea.setEditable(true);
         textArea2.setEditable(true);
+        textArea.setEditable(true);
+        textArea2.setEditable(false);
+        textArea5.setEditable(true);
+        textArea5.setEditable(false);
     }//GEN-LAST:event_formComponentResized
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -500,13 +648,13 @@ public class Creacion extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_loginActionPerformed
 
     private void btn_siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_siguienteActionPerformed
-        if ((report_actual + 1) != (reportes.size())) {
-            report_actual++;
-
+        report_actual++;
+        if (report_actual == (reportes.size() - 1)) {
+            btn_siguiente.setEnabled(false);
+            btn_anterior.setEnabled(true);
         } else {
-            report_actual = 0;
+            btn_anterior.setEnabled(true);
         }
-        System.out.println(reportes.size());
         Object[] objArray = reportes.get(report_actual).getColumnas().toArray();
         ArrayList<String> d = reportes.get(report_actual).getDatos();
         jlabel_id.setText(reportes.get(report_actual).getId_consulta());
@@ -526,7 +674,108 @@ public class Creacion extends javax.swing.JFrame {
             }
         }
         tabla_reporte.setModel(dtm);
+        actual_consulta.setText("Reporte " + (report_actual + 1) + " de " + reportes.size());
     }//GEN-LAST:event_btn_siguienteActionPerformed
+
+    private void btn_nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nextActionPerformed
+        error_actual++;
+        if (error_actual == (list_errores.size() - 1)) {
+            btn_next.setEnabled(false);
+            btn_last.setEnabled(true);
+        } else {
+            btn_last.setEnabled(true);
+        }
+        Object[] objArray = {list_errores.get(error_actual).getValor(), list_errores.get(error_actual).getNombre(), list_errores.get(error_actual).getEsperados(),
+            list_errores.get(error_actual).getTipo(), list_errores.get(error_actual).getFila() + 1, list_errores.get(error_actual).getColumna() + 1};
+        Object[] lagran = {"LEXEMA", "NOMBRE TOKEN", "TOKEN ESPERADOS", "ERROR TIPO", "FILA", "COLUMNA"};
+        DefaultTableModel dtm = new DefaultTableModel(lagran, 0);
+        dtm.addRow(objArray);
+        tabla_errores.setModel(dtm);
+        int valor = (int) tabla_errores.getValueAt(0, 4);
+        int valor2 = (int) tabla_errores.getValueAt(0, 5);
+        String valor0 = (String) tabla_errores.getValueAt(0, 0);
+        jlabel_error.setText("ERROR " + (error_actual + 1) + " de " + list_errores.size());
+        posicionar(valor, valor2, valor0);
+    }//GEN-LAST:event_btn_nextActionPerformed
+
+    private void btn_lastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lastActionPerformed
+        error_actual--;
+        if (error_actual == 0) {
+            btn_next.setEnabled(true);
+            btn_last.setEnabled(false);
+        } else {
+            btn_next.setEnabled(true);
+        }
+        Object[] objArray = {list_errores.get(error_actual).getValor(), list_errores.get(error_actual).getNombre(), list_errores.get(error_actual).getEsperados(),
+            list_errores.get(error_actual).getTipo(), list_errores.get(error_actual).getFila() + 1, list_errores.get(error_actual).getColumna() + 1};
+        Object[] lagran = {"LEXEMA", "NOMBRE TOKEN", "TOKEN ESPERADOS", "ERROR TIPO", "FILA", "COLUMNA"};
+        DefaultTableModel dtm = new DefaultTableModel(lagran, 0);
+        dtm.addRow(objArray);
+        tabla_errores.setModel(dtm);
+        int valor = (int) tabla_errores.getValueAt(0, 4);
+        int valor2 = (int) tabla_errores.getValueAt(0, 5);
+        String valor0 = (String) tabla_errores.getValueAt(0, 0);
+        jlabel_error.setText("ERROR " + (error_actual + 1) + " de " + list_errores.size());
+        posicionar(valor, valor2, valor0);
+    }//GEN-LAST:event_btn_lastActionPerformed
+
+    private void btn_anteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_anteriorActionPerformed
+        report_actual--;
+        if (report_actual == 0) {
+            btn_siguiente.setEnabled(true);
+            btn_anterior.setEnabled(false);
+        } else {
+            btn_siguiente.setEnabled(true);
+        }
+        Object[] objArray = reportes.get(report_actual).getColumnas().toArray();
+        ArrayList<String> d = reportes.get(report_actual).getDatos();
+        jlabel_id.setText(reportes.get(report_actual).getId_consulta());
+        jlabel_consulta.setText(reportes.get(report_actual).getConsulta());
+        DefaultTableModel dtm = new DefaultTableModel(objArray, 0);
+        ArrayList<String> escribiendo = new ArrayList<>();
+        int conteo = 0;
+        for (int i = 0; i < d.size(); i++) {
+            if (conteo == (objArray.length - 1)) {
+                escribiendo.add(d.get(i));
+                dtm.addRow(escribiendo.toArray());
+                escribiendo = new ArrayList<>();
+                conteo = 0;
+            } else {
+                escribiendo.add(d.get(i));
+                conteo++;
+            }
+        }
+        tabla_reporte.setModel(dtm);
+        actual_consulta.setText("Reporte " + (report_actual + 1) + " de " + reportes.size());
+    }//GEN-LAST:event_btn_anteriorActionPerformed
+
+    private void btn_reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reportesActionPerformed
+        jtab.setSelectedIndex(2);
+    }//GEN-LAST:event_btn_reportesActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (textArea.getText().isEmpty()) {
+            JOptionPane.showConfirmDialog(null,"Ingresa algo al campo de solicitudes antes de querer guardar");
+        } else {
+            JFileChooser fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            //Mostrar la ventana para abrir archivo y recoger la respuesta
+            //En el parámetro del showOpenDialog se indica la ventana
+            //  al que estará asociado. Con el valor this se asocia a la
+            //  ventana que la abre.
+            int respuesta = fc.showSaveDialog(this);
+            //Comprobar si se ha pulsado Aceptar
+            if (respuesta == JFileChooser.APPROVE_OPTION) {
+                String content = textArea.getText();
+                String path = fc.getSelectedFile().getAbsolutePath()+"\\actual.txt";
+                try {
+                    Files.write(Paths.get(path), content.getBytes());
+                } catch (IOException ex) {
+                    java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -581,65 +830,96 @@ public class Creacion extends javax.swing.JFrame {
                 Gson gson = new Gson();
                 Map<String, String> map = gson.fromJson(respuesta, Map.class);
                 if (!map.containsKey("ERROR")) {
-                    textArea2.setText(map.get("respuesta"));
-                    if (map.containsKey("reportes")) {
-                        reportes = new ArrayList<>();
-                        String[] partes_consulta = map.get("reportes").split("\t");
-                        for (String part : partes_consulta) {
-                            String[] parti = part.split("\n");
-                            Reporte nuevo = new Reporte();
-                            nuevo.setId_consulta(parti[0]);
-                            nuevo.setConsulta(parti[1]);
-                            System.out.println(nuevo.getConsulta());
-                            System.out.println(parti[2]);
-                            String[] cols = parti[2].split("<///>");
-                            for (String col : cols) {
-                                nuevo.getColumnas().add(col);
-                            }
-                            nuevo.setNoColumnas(nuevo.getColumnas().size());
-                            String[] dat = parti[3].split("<///>");
-                            for (String col : dat) {
-                                nuevo.getDatos().add(col);
-                                System.out.println(col);
-                            }
-                            reportes.add(nuevo);
+                    if (map.containsKey("errores")) {
+                        list_errores = new ArrayList<>();
+                        String[] parts = map.get("errores").split("\t");
+                        for (String p : parts) {
+                            String[] columns = p.split("\n");
+                            Errores nuevo = new Errores(Integer.parseInt(columns[4]), Integer.parseInt(columns[5]), columns[0], columns[1], columns[2], columns[3]);
+                            list_errores.add(nuevo);
                         }
-                        if (!reportes.isEmpty()) {
-                            Object[] objArray = reportes.get(0).getColumnas().toArray();
-                            ArrayList<String> d = reportes.get(0).getDatos();
-                            jlabel_id.setText(reportes.get(0).getId_consulta());
-                            jlabel_consulta.setText(reportes.get(0).getConsulta());
-                            DefaultTableModel dtm = new DefaultTableModel(objArray, 0);
-                            ArrayList<String> escribiendo = new ArrayList<>();
-                            int conteo = 0;
-                            for (int i = 0; i < d.size(); i++) {
-                                if (conteo == (objArray.length - 1)) {
-                                    escribiendo.add(d.get(i));
-                                    dtm.addRow(escribiendo.toArray());
-                                    escribiendo = new ArrayList<>();
-                                    conteo = 0;
+                        Object[] objArray = {list_errores.get(0).getValor(), list_errores.get(0).getNombre(), list_errores.get(0).getEsperados(),
+                            list_errores.get(0).getTipo(), list_errores.get(0).getFila() + 1, list_errores.get(0).getColumna() + 1};
+                        Object[] lagran = {"LEXEMA", "NOMBRE TOKEN", "TOKEN ESPERADOS", "ERROR TIPO", "FILA", "COLUMNA"};
+                        DefaultTableModel dtm = new DefaultTableModel(lagran, 0);
+                        dtm.addRow(objArray);
+                        tabla_errores.setModel(dtm);
+                        textArea5.setText(textArea.getText());
+                        jlabel_error.setText("ERROR 1 de " + list_errores.size());
+                        jtab.setSelectedIndex(3);
+                        posicionar(list_errores.get(0).getFila() + 1, list_errores.get(0).getColumna() + 1, list_errores.get(0).getValor());
+                        error_actual = 0;
+                        if (list_errores.size() > 1) {
+                            btn_next.setEnabled(true);
+                            btn_last.setEnabled(false);
+                        } else {
+                            btn_next.setEnabled(false);
+                            btn_last.setEnabled(false);
+                        }
+                        jtab.setEnabledAt(3, true);
+                    } else {
+                        textArea2.setText(map.get("respuesta"));
+                        if (map.containsKey("reportes")) {
+                            reportes = new ArrayList<>();
+                            String[] partes_consulta = map.get("reportes").split("\t");
+                            for (String part : partes_consulta) {
+                                String[] parti = part.split("\n");
+                                Reporte nuevo = new Reporte();
+                                nuevo.setId_consulta(parti[0]);
+                                nuevo.setConsulta(parti[1]);
+                                String[] cols = parti[2].split("<///>");
+                                for (String col : cols) {
+                                    nuevo.getColumnas().add(col);
+                                }
+                                nuevo.setNoColumnas(nuevo.getColumnas().size());
+                                String[] dat = parti[3].split("<///>");
+                                for (String col : dat) {
+                                    nuevo.getDatos().add(col);
+                                }
+                                reportes.add(nuevo);
+                            }
+                            if (!reportes.isEmpty()) {
+                                Object[] objArray = reportes.get(0).getColumnas().toArray();
+                                ArrayList<String> d = reportes.get(0).getDatos();
+                                jlabel_id.setText(reportes.get(0).getId_consulta());
+                                jlabel_consulta.setText(reportes.get(0).getConsulta());
+                                DefaultTableModel dtm = new DefaultTableModel(objArray, 0);
+                                ArrayList<String> escribiendo = new ArrayList<>();
+                                int conteo = 0;
+                                for (int i = 0; i < d.size(); i++) {
+                                    if (conteo == (objArray.length - 1)) {
+                                        escribiendo.add(d.get(i));
+                                        dtm.addRow(escribiendo.toArray());
+                                        escribiendo = new ArrayList<>();
+                                        conteo = 0;
+                                    } else {
+                                        escribiendo.add(d.get(i));
+                                        conteo++;
+                                    }
+                                }
+                                tabla_reporte.setModel(dtm);
+                                actual_consulta.setText("Reporte 1 de " + reportes.size());
+                                report_actual = 0;
+                                if (reportes.size() > 1) {
+                                    btn_siguiente.setEnabled(true);
+                                    btn_anterior.setEnabled(false);
                                 } else {
-                                    escribiendo.add(d.get(i));
-                                    conteo++;
+                                    btn_siguiente.setEnabled(false);
+                                    btn_anterior.setEnabled(false);
                                 }
                             }
-                            tabla_reporte.setModel(dtm);
-                            report_actual = 0;
-                            if (reportes.size() > 1) {
-                                btn_siguiente.setEnabled(true);
-                            }
+                            btn_reportes.setVisible(true);
+                            btn_reportes.setText("VER REPORTES (" + reportes.size() + ")");
                         }
-                        btn_reportes.setVisible(true);
-                        btn_reportes.setText("VER REPORTES (" + reportes.size() + ")");
+                        jtab.setSelectedIndex(1);
+                        jtab.setEnabledAt(1, true);
+                        jtab.setEnabledAt(2, true);
+                        setLogeado(map.get("usuario"));
+                        btn_login.setText("<html><span style=\"color: #D8FF90; font-size: 7px;\">CERRAR</span><br><span style=\"color: #D8FF90; font-size: 7px;\">SESION</span></html>");
+                        btn_login.setEnabled(true);
+                        btn_login.setContentAreaFilled(true);
+                        btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\onrz.png"));
                     }
-                    jtab.setSelectedIndex(1);
-                    jtab.setEnabledAt(1, true);
-                    jtab.setEnabledAt(2, true);
-                    setLogeado(map.get("usuario"));
-                    btn_login.setText("<html><span style=\"color: #D8FF90; font-size: 7px;\">CERRAR</span><br><span style=\"color: #D8FF90; font-size: 7px;\">SESION</span></html>");
-                    btn_login.setEnabled(true);
-                    btn_login.setContentAreaFilled(true);
-                    btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\onrz.png"));
                 } else {
                     JOptionPane.showMessageDialog(null, map.get("ERROR"));
                 }
@@ -651,8 +931,9 @@ public class Creacion extends javax.swing.JFrame {
         }
     }
 
-    public void posicionar(int linea, int columna) {
-        String texto = textArea.getText();
+    public void posicionar(int linea, int columna, String palabra) {
+        String texto = textArea5.getText();
+        textArea5.requestFocus();
         String[] lineas1 = texto.split("\n");
         int[] cuantos = new int[lineas1.length];
         for (int i = 0; i < lineas1.length; i++) {
@@ -663,7 +944,8 @@ public class Creacion extends javax.swing.JFrame {
             donde += cuantos[i] + 1;
         }
         donde += (columna - 1);
-        textArea.setCaretPosition(donde);
+        textArea5.setCaretPosition(donde);
+        textArea5.moveCaretPosition(donde + palabra.length());
     }
 
     public String getLogeado() {
@@ -674,28 +956,37 @@ public class Creacion extends javax.swing.JFrame {
         this.logeado = logeado;
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel actual_consulta;
     private javax.swing.JButton btn_anterior;
     private javax.swing.JButton btn_cargar;
+    private javax.swing.JButton btn_last;
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_login;
+    private javax.swing.JButton btn_next;
     private javax.swing.JButton btn_reportes;
     private javax.swing.JButton btn_siguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel jlabel_consulta;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextArea jlabel_consulta;
+    private javax.swing.JLabel jlabel_error;
     private javax.swing.JLabel jlabel_id;
     private javax.swing.JLabel jlabel_path;
     private javax.swing.JTabbedPane jtab;
     private javax.swing.JPanel pan1;
     private javax.swing.JPanel pan2;
+    private javax.swing.JPanel panel5;
+    private javax.swing.JTable tabla_errores;
     private javax.swing.JTable tabla_reporte;
     // End of variables declaration//GEN-END:variables
 }

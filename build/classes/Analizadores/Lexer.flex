@@ -23,7 +23,7 @@ ini= [Ii][Nn][Ii]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd]
 inis= [Ii][Nn][Ii]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd][Ee][Ss]
 fin= [Ff][Ii][Nn]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd]
 fins= [Ff][Ii][Nn]_[Ss][Oo][Ll][Ii][Cc][Ii][Tt][Uu][Dd][Ee][Ss]
-fecha = [12][09][09][0-9]"-"([0][1-9]|[1][0-2])"-"([0][1-9]|[1-2][0-9]|[3][01])
+fecha = [12][09]([9][0-9]|[012][0-9])"-"([0][1-9]|[1][0-2])"-"([0][1-9]|[1-2][0-9]|[3][01])
 esp = [ ]+
 %state CONSULTA
 %state STRING
@@ -146,5 +146,8 @@ esp = [ ]+
     {espacio}           {/*Ignore*/}
     {esp}               {/*Ignore*/}
 }
+    ({L}|{D}|{C})+              {return new Symbol(sym.USUARIO,yycolumn,yyline,yytext());}
 {esp} {/*ignore*/}
 {espacio}           {/*Ignore*/}
+/* error fallback */
+    .                              { return new Symbol(sym.ERRORLEX,yycolumn,yyline,yytext()); }

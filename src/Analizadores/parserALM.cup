@@ -46,7 +46,7 @@ parser code
 terminal COMILLAS, DOSP, FECHACP, TITULO, ALINEA, BOOL, OR, PARENTESISA, PARENTESISC, USUARIO, FECHA, IDF, IDC, TITULOP, NOMBREP, TEMAP, USUARIOCP, TEMA,
     LLAVEA, LLAVEC, NOMBREC, NUMERO, COMA, ID, URL, CLASE, INDICEC, TEXTOVC, ALINEAC, REQUERIDO, OPCIONES, FILAS, USUARIOP, CONTRAP, FECHAMP,
     COLUMNAS, URLC, CLASENORMAL, CLASEAREA, CLASEOPCIONES, CLASEIMAGEN, CLASEBOTON, INICIOFORM, INICIOUSUARIOS, COMPS, NOREGISTRO,
-    INICIODATOS, VALOR, REGISTROS;
+    INICIODATOS, VALOR, REGISTROS, INICIONEW;
 
 non terminal inicio, bloque_forms, bloque_usuarios, parametros_form, parametro_id, parametro_titulo, parametro_nombre, parametro_tema, parametro_user_creacion, parametro_fecha_creacion,
     grupo_componentes, parametros_componentes, bloque_componentes, parametro_id_componente, parametro_nombre_campo, parametro_clase, parametro_indice,
@@ -64,6 +64,7 @@ inicio::=
     INICIOFORM PARENTESISA bloque_forms PARENTESISC
     | INICIOUSUARIOS PARENTESISA bloque_usuarios PARENTESISC
     | INICIODATOS PARENTESISA bloque_dat PARENTESISC
+    | INICIONEW PARENTESISA bloque_forms PARENTESISC
 ;
 
 bloque_forms::=
