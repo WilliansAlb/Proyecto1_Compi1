@@ -14,6 +14,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -104,6 +106,7 @@ public class Creacion extends javax.swing.JFrame {
         pan1.add(jsp);
         jtab.setEnabledAt(2, false);
         jtab.setEnabledAt(1, false);
+        jtab.setEnabledAt(3, false);
 
         jsp2 = new JScrollPane();
         textArea2 = new JTextArea();
@@ -480,6 +483,9 @@ public class Creacion extends javax.swing.JFrame {
             }
         });
 
+        tabla_errores.setBackground(new java.awt.Color(25, 25, 25));
+        tabla_errores.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        tabla_errores.setForeground(new java.awt.Color(216, 255, 144));
         tabla_errores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -503,6 +509,14 @@ public class Creacion extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabla_errores.setEnabled(false);
+        tabla_errores.setGridColor(new java.awt.Color(216, 255, 144));
+        tabla_errores.setSelectionForeground(new java.awt.Color(26, 26, 26));
+        tabla_errores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabla_erroresMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tabla_errores);
         if (tabla_errores.getColumnModel().getColumnCount() > 0) {
             tabla_errores.getColumnModel().getColumn(0).setResizable(false);
@@ -512,6 +526,7 @@ public class Creacion extends javax.swing.JFrame {
             tabla_errores.getColumnModel().getColumn(4).setResizable(false);
             tabla_errores.getColumnModel().getColumn(5).setResizable(false);
         }
+        tabla_errores.getAccessibleContext().setAccessibleDescription("");
 
         javax.swing.GroupLayout panel5Layout = new javax.swing.GroupLayout(panel5);
         panel5.setLayout(panel5Layout);
@@ -685,15 +700,15 @@ public class Creacion extends javax.swing.JFrame {
         } else {
             btn_last.setEnabled(true);
         }
+        int valor = (int) tabla_errores.getValueAt(0, 4);
+        int valor2 = (int) tabla_errores.getValueAt(0, 5);
+        String valor0 = (String) tabla_errores.getValueAt(0, 0);
         Object[] objArray = {list_errores.get(error_actual).getValor(), list_errores.get(error_actual).getNombre(), list_errores.get(error_actual).getEsperados(),
             list_errores.get(error_actual).getTipo(), list_errores.get(error_actual).getFila() + 1, list_errores.get(error_actual).getColumna() + 1};
         Object[] lagran = {"LEXEMA", "NOMBRE TOKEN", "TOKEN ESPERADOS", "ERROR TIPO", "FILA", "COLUMNA"};
         DefaultTableModel dtm = new DefaultTableModel(lagran, 0);
         dtm.addRow(objArray);
         tabla_errores.setModel(dtm);
-        int valor = (int) tabla_errores.getValueAt(0, 4);
-        int valor2 = (int) tabla_errores.getValueAt(0, 5);
-        String valor0 = (String) tabla_errores.getValueAt(0, 0);
         jlabel_error.setText("ERROR " + (error_actual + 1) + " de " + list_errores.size());
         posicionar(valor, valor2, valor0);
     }//GEN-LAST:event_btn_nextActionPerformed
@@ -755,7 +770,7 @@ public class Creacion extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (textArea.getText().isEmpty()) {
-            JOptionPane.showConfirmDialog(null,"Ingresa algo al campo de solicitudes antes de querer guardar");
+            JOptionPane.showConfirmDialog(null, "Ingresa algo al campo de solicitudes antes de querer guardar");
         } else {
             JFileChooser fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -767,7 +782,7 @@ public class Creacion extends javax.swing.JFrame {
             //Comprobar si se ha pulsado Aceptar
             if (respuesta == JFileChooser.APPROVE_OPTION) {
                 String content = textArea.getText();
-                String path = fc.getSelectedFile().getAbsolutePath()+"\\actual.txt";
+                String path = fc.getSelectedFile().getAbsolutePath() + "\\actual.txt";
                 try {
                     Files.write(Paths.get(path), content.getBytes());
                 } catch (IOException ex) {
@@ -776,6 +791,13 @@ public class Creacion extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void tabla_erroresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_erroresMouseClicked
+        int valor = (int) tabla_errores.getValueAt(0, 4);
+        int valor2 = (int) tabla_errores.getValueAt(0, 5);
+        String valor0 = (String) tabla_errores.getValueAt(0, 0);
+        posicionar(valor, valor2, valor0);
+    }//GEN-LAST:event_tabla_erroresMouseClicked
 
     /**
      * @param args the command line arguments
@@ -813,6 +835,10 @@ public class Creacion extends javax.swing.JFrame {
     }
 
     public void comunicacionServidor() throws Exception {
+        jtab.setEnabledAt(2, false);
+        jtab.setEnabledAt(1, false);
+        jtab.setEnabledAt(3, false);
+        jtab.setSelectedIndex(0);
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
             final HttpPost httppost = new HttpPost("http://localhost:8080/WForms/Creacion");
             List<NameValuePair> params = new ArrayList<>(2);
