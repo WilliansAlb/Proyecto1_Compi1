@@ -107,7 +107,11 @@ public class Creacion extends javax.swing.JFrame {
         jtab.setEnabledAt(2, false);
         jtab.setEnabledAt(1, false);
         jtab.setEnabledAt(3, false);
-
+        jtab.setBackgroundAt(0, new Color(25, 25, 25));
+        jtab.setBackgroundAt(1, new Color(25, 25, 25));
+        jtab.setBackgroundAt(2, new Color(25, 25, 25));
+        jtab.setBackgroundAt(3, new Color(25, 25, 25));
+        jtab.setBackgroundAt(4, new Color(25, 25, 25));
         jsp2 = new JScrollPane();
         textArea2 = new JTextArea();
         textArea2.setBackground(new Color(97, 97, 97));
@@ -185,6 +189,15 @@ public class Creacion extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tabla_errores = new javax.swing.JTable();
         panel5 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        btn_seleccionar = new javax.swing.JButton();
+        path_importar = new javax.swing.JLabel();
+        btn_importar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        text_importar = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WForms");
@@ -197,7 +210,8 @@ public class Creacion extends javax.swing.JFrame {
         });
 
         jtab.setBackground(new java.awt.Color(25, 25, 25));
-        jtab.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        jtab.setForeground(new java.awt.Color(216, 255, 144));
+        jtab.setOpaque(true);
 
         jPanel1.setBackground(new java.awt.Color(25, 25, 25));
 
@@ -317,13 +331,11 @@ public class Creacion extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
-                        .addContainerGap(242, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(9, 9, 9))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
+                        .addComponent(btn_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(9, 9, 9))
         );
 
         jtab.addTab("AREA SOLICITUDES", jPanel1);
@@ -338,7 +350,7 @@ public class Creacion extends javax.swing.JFrame {
         );
         pan2Layout.setVerticalGroup(
             pan2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 433, Short.MAX_VALUE)
+            .addGap(0, 429, Short.MAX_VALUE)
         );
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -573,6 +585,92 @@ public class Creacion extends javax.swing.JFrame {
 
         jtab.addTab("VISUALIZAR ERRORES", jPanel4);
 
+        jPanel5.setBackground(new java.awt.Color(25, 25, 25));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(216, 255, 144));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("AREA DE IMPORTACIÓN DE FORMULARIOS");
+
+        btn_seleccionar.setBackground(new java.awt.Color(25, 25, 25));
+        btn_seleccionar.setForeground(new java.awt.Color(216, 255, 144));
+        btn_seleccionar.setText("SELECCIONAR ARCHIVO");
+        btn_seleccionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_seleccionarActionPerformed(evt);
+            }
+        });
+
+        path_importar.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        path_importar.setForeground(new java.awt.Color(216, 255, 144));
+        path_importar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        path_importar.setText("NO HAY NINGÚN ARCHIVO SELECCIONADO");
+
+        btn_importar.setBackground(new java.awt.Color(25, 25, 25));
+        btn_importar.setForeground(new java.awt.Color(216, 255, 144));
+        btn_importar.setText("IMPORTAR");
+        btn_importar.setEnabled(false);
+        btn_importar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_importarActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setForeground(new java.awt.Color(216, 255, 144));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("ÁREA DE RESPUESTA");
+
+        text_importar.setEditable(false);
+        text_importar.setBackground(new java.awt.Color(97, 97, 97));
+        text_importar.setColumns(20);
+        text_importar.setForeground(new java.awt.Color(216, 255, 144));
+        text_importar.setRows(5);
+        jScrollPane5.setViewportView(text_importar);
+
+        jLabel6.setForeground(new java.awt.Color(216, 255, 144));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("ARCHIVO SELECCIONADO:");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane5)
+                    .addComponent(btn_importar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(path_importar, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_seleccionar))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btn_seleccionar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(path_importar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_importar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jtab.addTab("IMPORTAR", jPanel5);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -652,13 +750,13 @@ public class Creacion extends javax.swing.JFrame {
         String[] options = {"SI", "NO"};
         int x = JOptionPane.showOptionDialog(null, "¿Estás seguro de cerrar sesión?",
                 "CERRAR SESION",
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\arrow.png"), options, options[0]);
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon("src/img/arrow.png"), options, options[0]);
         if (x == 0) {
             setLogeado("");
             btn_login.setText("<html><font color=red>SIN</font><br><font color =red>LOGIN</font></html>");
             btn_login.setEnabled(false);
             btn_login.setContentAreaFilled(false);
-            btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\offrz.png"));
+            btn_login.setIcon(new ImageIcon("src/img/offrz.png"));
         }
     }//GEN-LAST:event_btn_loginActionPerformed
 
@@ -700,15 +798,15 @@ public class Creacion extends javax.swing.JFrame {
         } else {
             btn_last.setEnabled(true);
         }
-        int valor = (int) tabla_errores.getValueAt(0, 4);
-        int valor2 = (int) tabla_errores.getValueAt(0, 5);
-        String valor0 = (String) tabla_errores.getValueAt(0, 0);
         Object[] objArray = {list_errores.get(error_actual).getValor(), list_errores.get(error_actual).getNombre(), list_errores.get(error_actual).getEsperados(),
             list_errores.get(error_actual).getTipo(), list_errores.get(error_actual).getFila() + 1, list_errores.get(error_actual).getColumna() + 1};
         Object[] lagran = {"LEXEMA", "NOMBRE TOKEN", "TOKEN ESPERADOS", "ERROR TIPO", "FILA", "COLUMNA"};
         DefaultTableModel dtm = new DefaultTableModel(lagran, 0);
         dtm.addRow(objArray);
         tabla_errores.setModel(dtm);
+        int valor = (int) tabla_errores.getValueAt(0, 4);
+        int valor2 = (int) tabla_errores.getValueAt(0, 5);
+        String valor0 = (String) tabla_errores.getValueAt(0, 0);
         jlabel_error.setText("ERROR " + (error_actual + 1) + " de " + list_errores.size());
         posicionar(valor, valor2, valor0);
     }//GEN-LAST:event_btn_nextActionPerformed
@@ -799,6 +897,35 @@ public class Creacion extends javax.swing.JFrame {
         posicionar(valor, valor2, valor0);
     }//GEN-LAST:event_tabla_erroresMouseClicked
 
+    private void btn_seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_seleccionarActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filtro2 = new FileNameExtensionFilter("WForm", "form");
+        chooser.setFileFilter(filtro2);
+        chooser.setAcceptAllFileFilterUsed(false);
+        int resultado = chooser.showOpenDialog(this);
+        if (resultado == 0) {
+            String path = chooser.getSelectedFile().getAbsolutePath();
+            path_importar.setText(path);
+            btn_importar.setEnabled(true);
+        } else {
+            path_importar.setText("No has seleccionado ningún archivo");
+            btn_importar.setEnabled(false);
+        }
+    }//GEN-LAST:event_btn_seleccionarActionPerformed
+
+    private void btn_importarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importarActionPerformed
+        File archivo = new File(path_importar.getText());
+        String ST;
+        try {
+            ST = new String(Files.readAllBytes(archivo.toPath()));
+            mandarFormulario(ST);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btn_importarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -840,13 +967,13 @@ public class Creacion extends javax.swing.JFrame {
         jtab.setEnabledAt(3, false);
         jtab.setSelectedIndex(0);
         try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            final HttpPost httppost = new HttpPost("http://localhost:8080/WForms/Creacion");
+            final HttpPost httppost = new HttpPost("http://localhost:80/WForms/Creacion");
             List<NameValuePair> params = new ArrayList<>(2);
 
             String texto = textArea.getText();
             //posicionar(10,18);
             params.add(new BasicNameValuePair("entrada", texto));
-            params.add(new BasicNameValuePair("usuario", "ozymandias"));
+            params.add(new BasicNameValuePair("usuario", logeado));
             httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
             try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
@@ -936,15 +1063,15 @@ public class Creacion extends javax.swing.JFrame {
                             }
                             btn_reportes.setVisible(true);
                             btn_reportes.setText("VER REPORTES (" + reportes.size() + ")");
+                            jtab.setEnabledAt(2, true);
                         }
                         jtab.setSelectedIndex(1);
                         jtab.setEnabledAt(1, true);
-                        jtab.setEnabledAt(2, true);
                         setLogeado(map.get("usuario"));
                         btn_login.setText("<html><span style=\"color: #D8FF90; font-size: 7px;\">CERRAR</span><br><span style=\"color: #D8FF90; font-size: 7px;\">SESION</span></html>");
                         btn_login.setEnabled(true);
                         btn_login.setContentAreaFilled(true);
-                        btn_login.setIcon(new ImageIcon("C:\\Users\\willi\\OneDrive\\Documentos\\NetBeansProjects\\Forms\\src\\img\\onrz.png"));
+                        btn_login.setIcon(new ImageIcon("src/img/onrz.png"));
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, map.get("ERROR"));
@@ -957,6 +1084,29 @@ public class Creacion extends javax.swing.JFrame {
         }
     }
 
+    public void mandarFormulario(String texto) throws Exception {
+        try (final CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            final HttpPost httppost = new HttpPost("http://localhost:80/WForms/Importar");
+            List<NameValuePair> params = new ArrayList<>(2);
+            params.add(new BasicNameValuePair("entrada", texto));
+            httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
+            System.out.println("Executing request " + httppost.getMethod() + " " + httppost.getUri());
+            try (final CloseableHttpResponse response = httpclient.execute(httppost)) {
+                String respuesta = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                System.out.println(respuesta);
+                Map<String, String> map = gson.fromJson(respuesta, Map.class);
+                if (map.containsKey("respuesta")){
+                    text_importar.setText(map.get("respuesta"));
+                }
+            } catch (IOException ex) {
+                java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        } catch (URISyntaxException ex) {
+            java.util.logging.Logger.getLogger(Creacion.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+    
     public void posicionar(int linea, int columna, String palabra) {
         String texto = textArea5.getText();
         textArea5.requestFocus();
@@ -987,23 +1137,30 @@ public class Creacion extends javax.swing.JFrame {
     private javax.swing.JLabel actual_consulta;
     private javax.swing.JButton btn_anterior;
     private javax.swing.JButton btn_cargar;
+    private javax.swing.JButton btn_importar;
     private javax.swing.JButton btn_last;
     private javax.swing.JButton btn_limpiar;
     private javax.swing.JButton btn_login;
     private javax.swing.JButton btn_next;
     private javax.swing.JButton btn_reportes;
+    private javax.swing.JButton btn_seleccionar;
     private javax.swing.JButton btn_siguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jlabel_consulta;
     private javax.swing.JLabel jlabel_error;
     private javax.swing.JLabel jlabel_id;
@@ -1012,7 +1169,9 @@ public class Creacion extends javax.swing.JFrame {
     private javax.swing.JPanel pan1;
     private javax.swing.JPanel pan2;
     private javax.swing.JPanel panel5;
+    private javax.swing.JLabel path_importar;
     private javax.swing.JTable tabla_errores;
     private javax.swing.JTable tabla_reporte;
+    private javax.swing.JTextArea text_importar;
     // End of variables declaration//GEN-END:variables
 }
