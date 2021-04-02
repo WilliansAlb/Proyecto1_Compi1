@@ -96,7 +96,8 @@ non terminal inicio, solicitud, bloque_usuario1, bloque_solicitudes, tipo_solici
     parametro_requerido, parametro_opciones, bloque_opciones, parametro_filas, parametro_columnas, parametro_url, bloque_eliminar,
     bloque1, bloque2, bloque3, bloque4, bloque5, bloque6, bloque7, bloque8, inicio_param_datos, bloque9, bloque9P, bloque_consultas, bloque_consultasP,
     descripcion_consulta, nombre_campos, campos, camposP, restricciones, partida, posibilidad, bloque1P, bloque_usuario1P, bloque2P, bloque3P,
-    bloque4P, bloque5P, bloque6P, bloque7P, bloque8P, bloque_componente1P, bloque_usuario2P, bloque_formulario1P, bloque_formulario2P;
+    bloque4P, bloque5P, bloque6P, bloque7P, bloque8P, bloque_componente1P, bloque_usuario2P, bloque_formulario1P, bloque_formulario2P, inicio_consulta,
+    final_consulta;
 
 non terminal String tipo_palabra, tipo_opcion, condicion_numerica, tipos_de_clases, campo;
 non terminal Map<String,String> tipo_condicion, condicional, tipo_numero, tipo_dato;
@@ -110,7 +111,7 @@ start with inicio;
 
 inicio::=
     INICIOE partida
-    | error posibilidad {: imp("hasta encontrar"); :}
+    | error posibilidad 
 ;
 
 posibilidad::=
@@ -121,7 +122,7 @@ posibilidad::=
 partida::=
     SOLICITUDESP MAYORQ bloque_solicitudes INICIOE FINSOLICITUDES MAYORQ
     | INICIOS COMILLAS tipo_solicitud MENORQ FINS FINE {:lista_solicitudes.add(temporal); temporal = new Solicitud();:}
-    | error {: imp("partida");:}
+    | error
 ;
 
 
@@ -147,12 +148,11 @@ tipo_solicitud::=
     | ELIMINARC inicio_param_componente bloque8 CORCHETEC LLAVEC    {:temporal.setTipo("ELIMINAR_COMPONENTE");:}
     | MODIFICARC inicio_param_componente bloque7 CORCHETEC LLAVEC   {:temporal.setTipo("MODIFICAR_COMPONENTE");:}
     | CONSULTARD inicio_param_datos bloque9 CORCHETEC LLAVEC        {:temporal.setTipo("CONSULTAR_DATOS");:}
-    | error
 ;
 
 bloque1::=
     LLAVEA bloque_usuario1 LLAVEC bloque1P {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque1P
+    | error
 ;
 
 bloque1P::=
@@ -161,7 +161,7 @@ bloque1P::=
 
 bloque2::=
     LLAVEA bloque_usuario2 LLAVEC bloque2P                 {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque2P
+    | error
 ;
 
 bloque2P::=
@@ -170,7 +170,7 @@ bloque2P::=
 
 bloque3::=
     LLAVEA parametro_usuario LLAVEC bloque3P               {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque3P
+    | error
 ;
 
 bloque3P::=
@@ -179,7 +179,7 @@ bloque3P::=
 
 bloque4::=
     LLAVEA bloque_formulario1 LLAVEC bloque4P             {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque4P
+    | error
 ;
 
 bloque4P::=
@@ -188,7 +188,7 @@ bloque4P::=
 
 bloque5::=
     LLAVEA parametro_id LLAVEC bloque5P                   {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque5P
+    | error
 ;
 
 bloque5P::=
@@ -197,7 +197,7 @@ bloque5P::=
 
 bloque6::=
     LLAVEA bloque_formulario2 LLAVEC bloque6P              {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque6P
+    | error
 ;
 
 bloque6P::=
@@ -206,7 +206,7 @@ bloque6P::=
 
 bloque7::=
     LLAVEA bloque_componente1 LLAVEC bloque7P             {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
-    | error bloque7P
+    | error 
 ;
 
 bloque7P::=
@@ -224,15 +224,17 @@ bloque8P::=
 
 inicio_param_usuario::=
     COMILLAS MAYORQ LLAVEA COMILLAS CREDENCIALES COMILLAS DOSP CORCHETEA
-    | error {: imp("parametro usuario"); :}
+    | error
 ;
 
 inicio_param_formulario::=
-    COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA 
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMF COMILLAS DOSP CORCHETEA
+    | error
 ;
 
 inicio_param_componente::=
-    COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA 
+    COMILLAS MAYORQ LLAVEA COMILLAS PARAMC COMILLAS DOSP CORCHETEA
+    | error
 ;
 
 
@@ -243,7 +245,6 @@ bloque_eliminar::=
 
 bloque_componente1::=
     parametros_agregar bloque_componente1P
-    | error bloque_componente1P
 ;
 
 bloque_componente1P::=
@@ -263,11 +264,11 @@ parametros_agregar::=
     | parametro_filas
     | parametro_columnas
     | parametro_url
+    | error
 ;
 
 bloque_usuario1::=
     parametros_crear bloque_usuario1P
-    | error bloque_usuario1P {: imp("falla acá");:}
 ;
 
 bloque_usuario1P::=
@@ -278,11 +279,11 @@ parametros_crear::=
     parametro_usuario
     | parametro_contra
     | parametro_fecha 
+    | error
 ;
 
 bloque_usuario2::=
     parametros_modificarU bloque_usuario2P
-    | error bloque_usuario2P {: imp("falla acá");:}
 ;
 
 bloque_usuario2P::=
@@ -294,11 +295,11 @@ parametros_modificarU::=
     | parametro_usuario_nuevo
     | parametro_contra_nueva
     | parametro_fecha_modificacion
+    | error
 ;
 
 bloque_formulario1::=
     parametros_formulario bloque_formulario1P
-    | error bloque_formulario1P {: imp("falla acá");:}
 ;
 
 bloque_formulario1P::=
@@ -312,11 +313,11 @@ parametros_formulario::=
     | parametro_tema
     | parametro_usuario_creacion
     | parametro_fecha
+    | error
 ;
 
 bloque_formulario2::=
     parametros_formulario2 bloque_formulario2P
-    | error bloque_formulario2P
 ;
 
 bloque_formulario2P::=
@@ -328,15 +329,17 @@ parametros_formulario2::=
     | parametro_titulo
     | parametro_nombre
     | parametro_tema
+    | error
 ;
 
 parametro_tema::=
-    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS                      {:agregarParametroAMap("TEMA",e1.toString());System.out.println("ingresado tema"); :}
+    COMILLAS TEMAP COMILLAS DOSP COMILLAS TEMA:e1 COMILLAS                      {:agregarParametroAMap("TEMA",e1.toString()); :}
 ;
 
 parametro_login::=
     parametro_usuario COMA parametro_contra {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
     | parametro_contra COMA parametro_usuario {:temporal.getCuantas().add(lista_temporal); lista_temporal = new HashMap<>(); temporal.setTieneErrores(false);:}
+    | error
 ;
 
 parametro_usuario::=
@@ -344,7 +347,7 @@ parametro_usuario::=
 ;
 
 parametro_usuario_creacion::=
-    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS              {:agregarParametroAMap("USUARIO_CREACION",e1.toString()); System.out.println("ingresado usuario creacion");:}
+    COMILLAS USUARIOCP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS              {:agregarParametroAMap("USUARIO_CREACION",e1.toString()); :}
 ;
 
 parametro_usuario_antiguo::=
@@ -364,7 +367,7 @@ parametro_contra_nueva::=
 ;
 
 parametro_fecha::=
-    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA",e1.toString());System.out.println("ingresado usuario creacion");:}
+    COMILLAS FECHACP COMILLAS DOSP COMILLAS FECHA:e1 COMILLAS {:agregarParametroAMap("FECHA",e1.toString()); :}
 ;
 
 parametro_fecha_modificacion::=
@@ -372,15 +375,15 @@ parametro_fecha_modificacion::=
 ;
 
 parametro_id::=
-    COMILLAS IDP COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:agregarParametroAMap("ID",e1.toString()); System.out.println("ingresado id");:}
+    COMILLAS IDP COMILLAS DOSP COMILLAS ID:e1 COMILLAS {:agregarParametroAMap("ID",e1.toString()); :}
 ;
 
 parametro_titulo::=
-    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS     {:agregarParametroAMap("TITULO",e1.toString()); System.out.println("ingresado titulo");:}
+    COMILLAS TITULOP COMILLAS DOSP COMILLAS tipo_opcion:e1 COMILLAS     {:agregarParametroAMap("TITULO",e1.toString()); :}
 ;
 
 parametro_nombre::=
-    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE",e1.toString()); System.out.println("ingresado nombre");:}
+    COMILLAS NOMBREP COMILLAS DOSP COMILLAS USUARIO:e1 COMILLAS         {:agregarParametroAMap("NOMBRE",e1.toString()); :}
 ;
 
 parametro_nombre_campo::=
@@ -455,11 +458,12 @@ parametro_url::=
 
 inicio_param_datos::=
     COMILLAS MAYORQ LLAVEA COMILLAS CONSULTASP COMILLAS DOSP CORCHETEA
+    | error
 ;
 
 bloque9::=
     LLAVEA bloque_consultas LLAVEC bloque9P
-    | error bloque9P
+    | error
 ;
 
 bloque9P::=
@@ -468,7 +472,6 @@ bloque9P::=
 
 bloque_consultas::=
     descripcion_consulta bloque_consultasP
-    | error bloque_consultasP
 ;
 
 bloque_consultasP::=
@@ -476,7 +479,17 @@ bloque_consultasP::=
 ;
 
 descripcion_consulta::=
-    COMILLAS NOCONSULTA:e1 COMILLAS DOSP COMILLAS SELECT DE campo:e2 CORCHETEA nombre_campos CORCHETEC restricciones COMILLAS {: cons_temp.setNoconsulta(e1.toString()); cons_temp.setForm(e2.toString()); lista_consultas.add(cons_temp); temporal.getConsulta().add(cons_temp); cons_temp = new Consulta(); :}
+    inicio_consulta nombre_campos final_consulta {:  lista_consultas.add(cons_temp); temporal.getConsulta().add(cons_temp); cons_temp = new Consulta(); :}
+;
+
+inicio_consulta::=
+    COMILLAS NOCONSULTA:e1 COMILLAS DOSP COMILLAS SELECT DE campo:e2 CORCHETEA {:cons_temp.setNoconsulta(e1.toString()); cons_temp.setForm(e2.toString()); :}
+    | error
+;
+
+final_consulta::=
+    CORCHETEC restricciones COMILLAS
+    | error
 ;
 
 campo::=
@@ -490,7 +503,6 @@ nombre_campos::=
 
 campos::=
     campo:e1 camposP {: cons_temp.getCampos().add(e1.toString()); :}
-    | error camposP
 ;
 
 camposP::=
@@ -506,12 +518,14 @@ restriccion::=
     | restriccion:e1 OROP restriccion:e2 {: ArrayList<Map<String,String>> para = new ArrayList<>(e1); Map<String,String> te = new HashMap<>(); te.put("OPLOGICO","OR"); para.add(te); para.addAll(e2); RESULT = para; :}
     | NOT restriccion:e1  {: ArrayList<Map<String,String>> para = e1; para.get(para.size()-1).put("NOT","true"); RESULT = para;:}
     %prec NOT
-    | PARENTESISA restriccion PARENTESISC {: imp("condicional con parentesis"); :}
+    | PARENTESISA restriccion PARENTESISC {: :}
     | condicional:e2      {: ArrayList<Map<String,String>> para = new ArrayList<>(); para.add(e2); RESULT = para; :}
+    | error
 ;
 
 condicional::=
     campo:e1 tipo_condicion:e2             {: Map<String,String> para = e2; para.put("CAMPO",e1.toString());  RESULT = para;  :}
+    | error tipo_condicion
 ;
 
 tipo_condicion::=

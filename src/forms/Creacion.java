@@ -980,6 +980,7 @@ public class Creacion extends javax.swing.JFrame {
                 System.out.println("----------------------------------------");
                 System.out.println(response.getCode() + " " + response.getReasonPhrase());
                 String respuesta = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+                System.out.println(respuesta);
                 Gson gson = new Gson();
                 Map<String, String> map = gson.fromJson(respuesta, Map.class);
                 if (!map.containsKey("ERROR")) {

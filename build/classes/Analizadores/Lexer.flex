@@ -14,7 +14,8 @@ L2 = [a-zA-ZÀ-ÿ\u00f1\u00d1]+
 D=[0-9]+
 DEC = [1-9][0-9]*["."]*[0-9]*
 C=[@_"-"%#&:]+
-C2=[@_%#&:]+
+C2=[@_%#&:.]+
+C3=["[""]""!"#$%&"'""("")""*""+",/:;="-"_~"?"@.]
 espacio=[\t|\r|\n]+
 DARK = [Dd][Aa][Rr][Kk]
 WHITE = [Ww][Hh][Ii][Tt][Ee]
@@ -110,8 +111,8 @@ esp = [ ]+
     {fecha} {return new Symbol(sym.FECHA,yycolumn,yyline,yytext());}
     ({L}|{D}|{C})+ {return new Symbol(sym.USUARIO,yycolumn,yyline,yytext());}
     ("$"|"_"|"-")("$"|"_"|"-"|{D}|{L})* {return new Symbol(sym.ID,yycolumn,yyline,yytext());}
-    ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(sym.URL, yycolumn,yyline,yytext());}
-    ({L}|{D})(({esp}|"-")*({L}|{D}|{C2}|{L2}))* {return new Symbol(sym.TITULO, yycolumn, yyline, yytext());}
+    ("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C3})*("/")?)* {return new Symbol(sym.URL, yycolumn,yyline,yytext());}
+    ({D}|{L2})(({esp}|"-")*({D}|{C2}|{L2}))* {return new Symbol(sym.TITULO, yycolumn, yyline, yytext());}
 }
 <CONSULTA> {
     ("\"")              { yybegin(YYINITIAL); return new Symbol(sym.COMILLAS, yycolumn, yyline, yytext()); }

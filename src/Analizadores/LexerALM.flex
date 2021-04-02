@@ -10,12 +10,13 @@ import java_cup.runtime.Symbol;
 %char
 %public
 L=[a-zA-Z]+
-L2 = [a-zA-ZÀ-ÿ\u00f1\u00d1]+
+L2=[a-zA-ZÀ-ÿ\u00f1\u00d1]+
 D=[0-9]+
 fecha = [12][09][0-9][0-9]"-"([0][1-9]|[1][0-2])"-"([0][1-9]|[1-2][0-9]|[3][01])
 C=[@_"-"%#&:]+
-C2=[@_%#&:]+
-espacio=[ |\t|\r|\n]+
+C2=[@_%#&:.]+
+C3=["[""]""!"#$%&"'""("")""*""+",/:;="-"_~"?"@.]
+espacio=[\t|\r|\n]+
 esp = [ ]+
 %{
     private Symbol symbol(int type, Object value){
@@ -165,13 +166,16 @@ esp = [ ]+
 ("$"|"_"|"-")("$"|"_"|"-"|{D}|{L})* {return new Symbol(symALM.ID,yycolumn,yyline,yytext());}
 
 /*URL*/
-("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C})*("/")?)* {return new Symbol(symALM.URL, yycolumn,yyline,yytext());}
+("https://")?{L}({L})*"."{L}({L})*".com/"(({L}|{D}|{C3})*("/")?)* {return new Symbol(symALM.URL, yycolumn,yyline,yytext());}
 
 /*TITULO*/
-({L}|{D})(({esp}|"-")*({L}|{D}|{C2}|{L2}))* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
+({D}|{L2})(({esp}|"-")*({D}|{C2}|{L2}))* {return new Symbol(symALM.TITULO, yycolumn, yyline, yytext());}
 
 /* Espacios en blanco */
 {espacio} {/*Ignore*/}
+
+/* Espacios en blanco */
+{esp} {/*Ignore*/}
 
 /* Comentarios */
 ( "//"(.)* ) {/*Ignore*/}

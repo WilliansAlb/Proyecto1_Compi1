@@ -201,11 +201,11 @@ bloque_opciones::=
 ;
 
 parametro_filas::=
-    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS            {:comp_temporal.setFilas((int)e1);:}
+    COMILLAS FILAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS            {:comp_temporal.setFilas(Integer.parseInt(e1.toString()));:}
 ;
 
 parametro_columnas::=
-    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS         {:comp_temporal.setColumnas((int)e1);:}
+    COMILLAS COLUMNAS COMILLAS DOSP COMILLAS NUMERO:e1 COMILLAS         {:comp_temporal.setColumnas(Integer.parseInt(e1.toString()));:}
 ;
 
 parametro_url::=
